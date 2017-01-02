@@ -13,12 +13,13 @@ import com.trippal.constants.TPConstants;
 
 public class TPUtil {
 
-	public static JsonObject getAutoCompletePlaces(String searchStr) throws Exception {
+	public static JsonObject getAutoCompletePlaces(String searchStr) throws Exception
+	{
 		String uri = TPConstants.GOOGLE_AUTOCOMPLETE_API;
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("input", searchStr);
 		queryParams.put("key", getGoogleAPIKey());
-		queryParams.put("type", "(cities)");
+		queryParams.put("type", "(regions)");
 		RestClient restClient = new RestClient();
 		JsonObject googleResponse = restClient.get(uri, queryParams);
 		return convertTo(googleResponse);
