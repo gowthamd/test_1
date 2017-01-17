@@ -1,5 +1,7 @@
 package com.trippal;
 
+import java.util.List;
+
 import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -19,8 +21,9 @@ public class DestinationAPIRest {
 
 	@GET
 	@Path("/places")
-	public String getAutoCompletePlaces(@QueryParam(value = "str") String placeStr) throws Exception {
-		JsonObject jsonObject = TPUtil.getAutoCompletePlaces(placeStr);
+	public String getAutoCompletePlaces(@QueryParam(value = "str") String placeStr,
+			@QueryParam(value = "region") Integer regionType) throws Exception {
+		JsonObject jsonObject = TPUtil.getAutoCompletePlaces(placeStr,regionType);
 		return jsonObject.toString();
 	}
 
