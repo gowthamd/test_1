@@ -1,0 +1,30 @@
+package com.trippal;
+
+import java.util.List;
+
+import javax.json.JsonObject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+
+import com.trippal.utils.TPUtil;
+
+@Path("/autocomplete")
+public class DestinationAPIRest {
+	/**
+	 * get autocomplete place result for given str
+	 * 
+	 * @param placeStr
+	 * @return
+	 * @throws Exception
+	 */
+
+	@GET
+	@Path("/places")
+	public String getAutoCompletePlaces(@QueryParam(value = "str") String placeStr,
+			@QueryParam(value = "region") Integer regionType) throws Exception {
+		JsonObject jsonObject = TPUtil.getAutoCompletePlaces(placeStr,regionType);
+		return jsonObject.toString();
+	}
+
+}
