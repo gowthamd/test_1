@@ -11,10 +11,18 @@ import com.trippal.utils.TPUtil;
 public class NearByPlacesAPIRest {
 	
 	@GET
-	@Path("/places")
-	public String getNearByPlaces(@QueryParam(value = "place-id") String placeId,
+	@Path("/rating")
+	public String getNearByPlacesByRating(@QueryParam(value = "place-id") String placeId,
 			@QueryParam(value = "radius") Integer radius) throws Exception {
-		JsonObject jsonObject = TPUtil.getNearbyPlaces(placeId, radius);
+		JsonObject jsonObject = TPUtil.getNearbyPlacesByRating(placeId, radius);
+		return jsonObject.toString();
+	}
+	
+	@GET
+	@Path("/prominence")
+	public String getNearByPlacesByProminence(@QueryParam(value = "place-id") String placeId,
+			@QueryParam(value = "radius") Integer radius) throws Exception {
+		JsonObject jsonObject = TPUtil.getNearbyPlacesByRating(placeId, radius);
 		return jsonObject.toString();
 	}
 

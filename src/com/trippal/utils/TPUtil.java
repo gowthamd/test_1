@@ -13,6 +13,7 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 import com.trippal.constants.TPConstants;
 
@@ -21,24 +22,40 @@ public class TPUtil {
 	public static void main(String args[]) throws Exception {
 		JsonObject jsonObject = TPUtil.getAutoCompletePlaces("bangla",14);
 		System.out.println(jsonObject.toString());
-		//String place_id = "ChIJbU60yXAWrjsR4E9-UejD3_g"; //Bangalore
-		String place_id = "ChIJv8a-SlENCDsRkkGEpcqC1Qs";//Kochi
+		//String place_id = jsonObject.getJsonArray("destinations").getJsonObject(0).getJsonArray("cities").getJsonObject(0).getString("id");
+		String place_id = "ChIJbU60yXAWrjsR4E9-UejD3_g"; //Bangalore
+		//String place_id = "ChIJv8a-SlENCDsRkkGEpcqC1Qs";//Kochi
 		JsonObject location = TPUtil.getPlaceDetailsById(place_id);
-		JsonObject nearByPlaces = TPUtil.getNearbyPlaces(place_id, 50000);
-		System.out.println(nearByPlaces.toString());
-		
+		JsonObject nearByPlaces = TPUtil.getNearbyPlacesByRating(place_id, 50000);
+		//System.out.println(nearByPlaces.toString());
+		JsonObject prominentPlace = TPUtil.getNearbyPlacesByProminence(place_id, 20000);
+		System.out.println(prominentPlace.toString());		
 	}
 
-	public static JsonObject getNearbyPlaces(String placeId, int radius) throws Exception {
-		JsonObject location = getPlaceDetailsById(placeId);
+	public static JsonObject getNearbyPlacesByRating(String placeId, int radius) throws Exception {
 		String uri = TPConstants.GOOGLE_NEARBY_PLACES_API;
+		Map<String, Object> queryParams = getNearByPlacesQuery(placeId, radius);
+		RestClient restClient = new RestClient();
+		JsonObject googleResponse = restClient.get(uri, queryParams);
+		return convertToPlacesArray(googleResponse, true);
+	}
+	
+	public static JsonObject getNearbyPlacesByProminence(String placeId, int radius) throws Exception {
+		String uri = TPConstants.GOOGLE_NEARBY_PLACES_API;
+		Map<String, Object> queryParams = getNearByPlacesQuery(placeId, radius);
+		queryParams.put("rankby", "prominence");
+		RestClient restClient = new RestClient();
+		JsonObject googleResponse = restClient.get(uri, queryParams);		
+		return convertToPlacesArray(googleResponse,false);
+	}
+	
+	private static Map<String, Object> getNearByPlacesQuery(String placeId, int radius) throws Exception{
+		JsonObject location = getPlaceDetailsById(placeId);
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("key", getGoogleAPIKey());
 		queryParams.put("location", getLocationParam(location));
-		queryParams.put("radius", radius);
-		RestClient restClient = new RestClient();
-		JsonObject googleResponse = restClient.get(uri, queryParams);
-		return convertToPlacesArray(googleResponse);
+		queryParams.put("radius", radius>50000?50000:radius);
+		return queryParams;
 	}
 	
 	private static String getLocationParam(JsonObject location){
@@ -51,7 +68,6 @@ public class TPUtil {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("key", getGoogleAPIKey());
 		queryParams.put("placeid", place_id);
-		queryParams.put("keyword", "spa");
 		RestClient restClient = new RestClient();
 		JsonObject googleResponse = restClient.get(uri, queryParams);
 		return getLocationCordinates(googleResponse);
@@ -142,11 +158,25 @@ public class TPUtil {
 	
 
 	
-	private static JsonObject convertToPlacesArray(JsonObject nearByJson){
+	private static JsonObject convertToPlacesArray(JsonObject nearByJson, boolean sortByRating){
 		JsonArray placesArray = (JsonArray)nearByJson.get("results");
 		JsonObjectBuilder destinationResBuilder = Json.createObjectBuilder();
 		JsonArrayBuilder destinationArrayBuilder = Json.createArrayBuilder();
-		List<String> placeTypes = new ArrayList<String>();
+		
+		if(sortByRating){
+			sortByRating(placesArray, destinationArrayBuilder);
+		}else{
+			for(int i=1; i<placesArray.size(); i++){
+				JsonObject place = placesArray.getJsonObject(i);
+				destinationArrayBuilder.add(place);
+			}
+		}
+		destinationResBuilder.add("nearbyplaces", destinationArrayBuilder.build());
+		
+		return destinationResBuilder.build();
+	}
+	
+	private static void sortByRating(JsonArray placesArray, JsonArrayBuilder destinationArrayBuilder){
 		Map<Double,List<JsonObject>> ratingMap = new HashMap<Double,List<JsonObject>>();
 		for(int i=1; i<placesArray.size(); i++){
 			JsonObject place = placesArray.getJsonObject(i);
@@ -173,9 +203,6 @@ public class TPUtil {
 				destinationArrayBuilder.add(place);
 			}
 		}
-		destinationResBuilder.add("nearbyplaces", destinationArrayBuilder.build());
-		
-		return destinationResBuilder.build();
 	}
 
 	private static boolean isTypeMatching(JsonObject jsonObject, String regionType) {
