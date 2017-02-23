@@ -1,7 +1,10 @@
 package com.trippal.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +21,45 @@ public class TPUtil {
 	public static void main(String args[]) throws Exception {
 		JsonObject jsonObject = TPUtil.getAutoCompletePlaces("bangla",14);
 		System.out.println(jsonObject.toString());
+		//String place_id = "ChIJbU60yXAWrjsR4E9-UejD3_g"; //Bangalore
+		String place_id = "ChIJv8a-SlENCDsRkkGEpcqC1Qs";//Kochi
+		JsonObject location = TPUtil.getPlaceDetailsById(place_id);
+		JsonObject nearByPlaces = TPUtil.getNearbyPlaces(place_id, 50000);
+		System.out.println(nearByPlaces.toString());
+		
+	}
+
+	public static JsonObject getNearbyPlaces(String placeId, int radius) throws Exception {
+		JsonObject location = getPlaceDetailsById(placeId);
+		String uri = TPConstants.GOOGLE_NEARBY_PLACES_API;
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("key", getGoogleAPIKey());
+		queryParams.put("location", getLocationParam(location));
+		queryParams.put("radius", radius);
+		RestClient restClient = new RestClient();
+		JsonObject googleResponse = restClient.get(uri, queryParams);
+		return convertToPlacesArray(googleResponse);
+	}
+	
+	private static String getLocationParam(JsonObject location){
+		String param = location.get("lat").toString()+','+location.get("lng").toString();
+		return param;
+	}
+
+	private static JsonObject getPlaceDetailsById(String place_id) throws Exception {
+		String uri = TPConstants.GOOGLE_PLACE_DETAILS_API;
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("key", getGoogleAPIKey());
+		queryParams.put("placeid", place_id);
+		queryParams.put("keyword", "spa");
+		RestClient restClient = new RestClient();
+		JsonObject googleResponse = restClient.get(uri, queryParams);
+		return getLocationCordinates(googleResponse);
+	}
+	
+	private static JsonObject getLocationCordinates(JsonObject placeDetails){
+		JsonObject placeDetail = placeDetails.getJsonObject("result").getJsonObject("geometry").getJsonObject("location");
+		return placeDetail;
 	}
 
 	public static JsonObject getAutoCompletePlaces(String searchStr, Integer regionType) throws Exception {
@@ -95,6 +137,44 @@ public class TPUtil {
 			}
 		}
 		destinationResBuilder.add(regionType, destinationArrayBuilder.build());
+		return destinationResBuilder.build();
+	}
+	
+
+	
+	private static JsonObject convertToPlacesArray(JsonObject nearByJson){
+		JsonArray placesArray = (JsonArray)nearByJson.get("results");
+		JsonObjectBuilder destinationResBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder destinationArrayBuilder = Json.createArrayBuilder();
+		List<String> placeTypes = new ArrayList<String>();
+		Map<Double,List<JsonObject>> ratingMap = new HashMap<Double,List<JsonObject>>();
+		for(int i=1; i<placesArray.size(); i++){
+			JsonObject place = placesArray.getJsonObject(i);
+			Double rating = Double.parseDouble(place.get("rating") != null?place.get("rating").toString():"0");
+			List<JsonObject> places = ratingMap.get(rating);
+			if(places == null){
+				places = new ArrayList<JsonObject>();
+				ratingMap.put(rating, places);
+			}
+			places.add(place);			
+		}
+		List<Double> keyList = new ArrayList<Double>(ratingMap.keySet());
+		Collections.sort(keyList, new Comparator<Double>() {
+
+			@Override
+			public int compare(Double rating1, Double rating2) {
+				return rating2.compareTo(rating1);
+			}
+		});
+		Iterator<Double> keyIter = keyList.iterator();
+		while(keyIter.hasNext()){
+			List<JsonObject> places = ratingMap.get(keyIter.next());
+			for(JsonObject place : places){
+				destinationArrayBuilder.add(place);
+			}
+		}
+		destinationResBuilder.add("nearbyplaces", destinationArrayBuilder.build());
+		
 		return destinationResBuilder.build();
 	}
 

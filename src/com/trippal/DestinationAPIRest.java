@@ -1,7 +1,5 @@
 package com.trippal;
 
-import java.util.List;
-
 import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
