@@ -13,6 +13,7 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 import com.trippal.constants.TPConstants;
 
@@ -21,8 +22,9 @@ public class TPUtil {
 	public static void main(String args[]) throws Exception {
 		JsonObject jsonObject = TPUtil.getAutoCompletePlaces("bangla",14);
 		System.out.println(jsonObject.toString());
+		String place_id = jsonObject.getJsonArray("destinations").getJsonObject(0).getJsonArray("cities").getJsonObject(0).getString("id");
 		//String place_id = "ChIJbU60yXAWrjsR4E9-UejD3_g"; //Bangalore
-		String place_id = "ChIJv8a-SlENCDsRkkGEpcqC1Qs";//Kochi
+		//String place_id = "ChIJv8a-SlENCDsRkkGEpcqC1Qs";//Kochi
 		JsonObject location = TPUtil.getPlaceDetailsById(place_id);
 		JsonObject nearByPlaces = TPUtil.getNearbyPlaces(place_id, 50000);
 		System.out.println(nearByPlaces.toString());
@@ -35,7 +37,7 @@ public class TPUtil {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("key", getGoogleAPIKey());
 		queryParams.put("location", getLocationParam(location));
-		queryParams.put("radius", radius);
+		queryParams.put("radius", radius>50000?50000:radius);
 		RestClient restClient = new RestClient();
 		JsonObject googleResponse = restClient.get(uri, queryParams);
 		return convertToPlacesArray(googleResponse);
@@ -51,7 +53,6 @@ public class TPUtil {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("key", getGoogleAPIKey());
 		queryParams.put("placeid", place_id);
-		queryParams.put("keyword", "spa");
 		RestClient restClient = new RestClient();
 		JsonObject googleResponse = restClient.get(uri, queryParams);
 		return getLocationCordinates(googleResponse);
@@ -146,7 +147,6 @@ public class TPUtil {
 		JsonArray placesArray = (JsonArray)nearByJson.get("results");
 		JsonObjectBuilder destinationResBuilder = Json.createObjectBuilder();
 		JsonArrayBuilder destinationArrayBuilder = Json.createArrayBuilder();
-		List<String> placeTypes = new ArrayList<String>();
 		Map<Double,List<JsonObject>> ratingMap = new HashMap<Double,List<JsonObject>>();
 		for(int i=1; i<placesArray.size(); i++){
 			JsonObject place = placesArray.getJsonObject(i);
