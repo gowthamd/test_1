@@ -25,5 +25,14 @@ public class NearByPlacesAPIRest {
 		JsonObject jsonObject = TPUtil.getNearbyPlacesByRating(placeId, radius);
 		return jsonObject.toString();
 	}
+	
+	@GET
+	@Path("/tourist-places")
+	public String getNearByTouristPlaces(@QueryParam(value = "destination") String destination) throws Exception {
+		JsonObject jsonObject = TPUtil.getNearbyTouristPlaces(destination);
+		return jsonObject.toString();
+	}
+	
+	
 
 }
