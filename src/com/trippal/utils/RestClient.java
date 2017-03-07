@@ -4,6 +4,7 @@ import java.io.StringReader;
 import java.util.Map;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.ws.rs.client.Client;
@@ -25,6 +26,14 @@ public class RestClient {
 		Response response = target.request(MediaType.APPLICATION_JSON).get(Response.class);
 		return jsonFromString(response.readEntity(String.class));
 	}
+	
+	public JsonArray getAsArray(String uri, Map<String, Object> queryParams) throws Exception {
+		uri = buildQueryParam(uri, queryParams);
+		WebTarget target = client.target(uri);
+		Response response = target.request(MediaType.APPLICATION_JSON).get(Response.class);
+		return jsonArrayFromString(response.readEntity(String.class));
+	}
+	
 
 	/**
 	 * build query params
@@ -58,6 +67,20 @@ public class RestClient {
 	private JsonObject jsonFromString(String jsonObjectStr) {
 		JsonReader jsonReader = Json.createReader(new StringReader(jsonObjectStr));
 		JsonObject object = jsonReader.readObject();
+		jsonReader.close();
+		return object;
+	}
+	
+	/**
+	 * 
+	 * converts jsonStr to jsonObj
+	 * 
+	 * @param jsonObjectStr
+	 * @return
+	 */
+	private JsonArray jsonArrayFromString(String jsonObjectStr) {
+		JsonReader jsonReader = Json.createReader(new StringReader(jsonObjectStr));
+		JsonArray object = jsonReader.readArray();
 		jsonReader.close();
 		return object;
 	}
