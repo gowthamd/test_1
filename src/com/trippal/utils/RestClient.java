@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 
 public class RestClient {
 	Client client;
-
+ 
 	public RestClient() {
 		client = ClientBuilder.newClient();
 	}
@@ -34,6 +34,12 @@ public class RestClient {
 		return jsonArrayFromString(response.readEntity(String.class));
 	}
 	
+	public String getAsString(String uri, Map<String, Object> queryParams) throws Exception {
+		uri = buildQueryParam(uri, queryParams);
+		WebTarget target = client.target(uri);
+		Response response = target.request(MediaType.APPLICATION_JSON).get(Response.class);
+		return response.readEntity(String.class);
+	}
 
 	/**
 	 * build query params

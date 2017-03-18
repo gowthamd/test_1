@@ -253,13 +253,13 @@ public class TPUtil {
 		}
 		return false;
 	}
-
+ 
 	/**
 	 * gets google api key from properties file(googleapi.properties)
 	 * 
 	 * @return
 	 */
-	public static String getGoogleAPIKey() throws Exception {
+	public static String getGoogleAPIKey(){
 		/*
 		 * Properties prop = new Properties(); try {
 		 * prop.load(Thread.currentThread().getContextClassLoader().
