@@ -23,11 +23,6 @@ public class TPUtil {
 	
 	private static String apiKey = null;
 	
-	static{
-		GooglePlacesDao placesDao = new GooglePlacesDaoImpl();
-		apiKey = placesDao.getAPIKey();
-	}
-	
 	public static void main(String args[]) throws Exception {
 		JsonObject jsonObject = TPUtil.getAutoCompletePlaces("bangla",14);
 		System.out.println(jsonObject.toString());
@@ -270,6 +265,11 @@ public class TPUtil {
 	 * @return
 	 */
 	public static String getGoogleAPIKey(){
+
+		if(apiKey == null){
+			GooglePlacesDao placesDao = new GooglePlacesDaoImpl();
+			apiKey = placesDao.getAPIKey();
+		}
 
 		return apiKey;
 	}
