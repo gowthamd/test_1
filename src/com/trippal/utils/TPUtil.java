@@ -16,7 +16,17 @@ import javax.json.JsonObjectBuilder;
 
 import com.trippal.constants.TPConstants;
 
+import com.trippaldal.dal.places.GooglePlacesDao;
+import com.trippaldal.dal.places.GooglePlacesDaoImpl;
+
 public class TPUtil {
+	
+	private static String apiKey = null;
+	
+	static{
+		GooglePlacesDao placesDao = new GooglePlacesDaoImpl();
+		apiKey = placesDao.getAPIKey();
+	}
 	
 	public static void main(String args[]) throws Exception {
 		JsonObject jsonObject = TPUtil.getAutoCompletePlaces("bangla",14);
@@ -260,13 +270,7 @@ public class TPUtil {
 	 * @return
 	 */
 	public static String getGoogleAPIKey(){
-		/*
-		 * Properties prop = new Properties(); try {
-		 * prop.load(Thread.currentThread().getContextClassLoader().
-		 * getResourceAsStream("googleapi.properties")); } catch (IOException e)
-		 * { throw new Exception("failed to load properties file"); } return
-		 * prop.getProperty(TPConstants.GOOGLE_API_KEY);
-		 */
-		return "AIzaSyDhozxmXh6oh3CgHX481fyNYiPTFFPwwzs";
+
+		return apiKey;
 	}
 }
