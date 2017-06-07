@@ -15,9 +15,8 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import com.trippal.constants.TPConstants;
-
-import com.trippaldal.dal.places.GooglePlacesDao;
-import com.trippaldal.dal.places.GooglePlacesDaoImpl;
+import com.trippaldal.dal.config.places.GooglePlacesDao;
+import com.trippaldal.dal.config.places.GooglePlacesDaoImpl;
 
 public class TPUtil {
 	
