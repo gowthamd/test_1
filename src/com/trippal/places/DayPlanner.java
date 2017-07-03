@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class DayPlanner {
 
-	public void planItenary(List<Places> places) {
+	public List<Input> planItenary(List<Places> places) {
 
 		// sort place based on ranking
 		int placeCount = places.size();
@@ -26,7 +26,7 @@ public class DayPlanner {
 		DayPlannerIter2 iter2 = new DayPlannerIter2();
 		Integer identifiedPathTotalDst = iter2.identifySuitablePathBasedOnWeightage(totalDstToPathsMap);
 		List<Input> identifiedPath = totalDstToPathsMap.get(identifiedPathTotalDst);
-
+		return identifiedPath;
 	}
 
 }

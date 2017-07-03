@@ -5,14 +5,14 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-public class TPPlaceObj {
+public class TPPlaceObj implements Comparable<TPPlaceObj>{
 	
 	private JsonObject geometry;
 	private JsonObject viewport;
 	private String googleId;
 	private JsonValue name;
 	private JsonObject openingHours;
-	private JsonValue rating;
+	private Double rating;
 	private JsonValue types;
 	public JsonObject getGeometry() {
 		return geometry;
@@ -44,11 +44,11 @@ public class TPPlaceObj {
 	public void setOpeningHours(JsonObject openingHours) {
 		this.openingHours = openingHours;
 	}
-	public JsonValue getRating() {
+	public Double getRating() {
 		return rating;
 	}
-	public void setRating(JsonValue jsonValue) {
-		this.rating = jsonValue;
+	public void setRating(Double rating) {
+		this.rating = rating;
 	}
 	public JsonValue getTypes() {
 		return types;
@@ -65,6 +65,10 @@ public class TPPlaceObj {
 		}
 		jsonBuilder.add("types", this.getTypes());
 		return jsonBuilder.build();
+	}
+	@Override
+	public int compareTo(TPPlaceObj tpPlaceObj) {		
+		return tpPlaceObj.getRating().compareTo(this.getRating());
 	}
 	
 }

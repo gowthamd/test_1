@@ -1,11 +1,12 @@
 package com.trippal.places;
 
-import java.sql.Time;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TimeSlot {
 
-	Time openTime;
-	Time closeTime;
+	Map<Integer, Time> timeMap = new HashMap<Integer, Time>();
+	boolean isAlwaysOpen = false;
 	int hoursToSpend;
 	public int getHoursToSpend() {
 		return hoursToSpend;
@@ -13,16 +14,37 @@ public class TimeSlot {
 	public void setHoursToSpend(int hoursToSpend) {
 		this.hoursToSpend = hoursToSpend;
 	}
-	public Time getOpenTime() {
-		return openTime;
+	public Time getTime(int weekday) {
+		return timeMap.get(weekday);
 	}
-	public void setOpenTime(Time openTime) {
-		this.openTime = openTime;
+	
+	public void setTime(int weekday, int open, int close) {
+		timeMap.put(weekday, new Time(open, close));
 	}
-	public Time getCloseTime() {
-		return closeTime;
+	
+	public void setDefaultTime(){
+		timeMap.put(6, new Time(0,2359));
 	}
-	public void setCloseTime(Time closeTime) {
-		this.closeTime = closeTime;
+
+	class Time{
+		int openTime;
+		int closeTime;
+		public Time(int openTime, int closeTime){
+			this.openTime = openTime;
+			this.closeTime = closeTime;
+		}
+		public int getOpenTime() {
+			return openTime;
+		}
+		public int getCloseTime() {
+			return closeTime;
+		}
+	}
+
+	public void setAlwaysOpen(boolean isAlwaysOpen) {
+		this.isAlwaysOpen = isAlwaysOpen;
+	}
+	public boolean isAlwaysOpen(){
+		return this.isAlwaysOpen;
 	}
 }

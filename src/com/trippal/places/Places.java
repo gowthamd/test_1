@@ -4,11 +4,11 @@ public class Places {
 	
 
 	Integer rank;
-
 	TimeSlot openedTime;
 	TimeSlot bestTime;
 	Location location;
-	
+	private String googleId;
+
 	public Integer getRank() {
 		return rank;
 	}
@@ -17,6 +17,18 @@ public class Places {
 	}
 	public TimeSlot getOpenedTime() {
 		return openedTime;
+	}
+	public int getOpenedTime(int weekday){
+		if(null == openedTime.getTime(weekday)){
+			return 0;
+		}
+		return openedTime.getTime(weekday).getOpenTime();
+	}
+	public int getClosedTime(int weekday){
+		if(null == openedTime.getTime(weekday)){
+			return 2359;
+		}
+		return openedTime.getTime(weekday).getCloseTime();
 	}
 	public void setOpenedTime(TimeSlot openedTime) {
 		this.openedTime = openedTime;
@@ -33,5 +45,12 @@ public class Places {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
+	public void setGoogleId(String googleId) {
+		this.googleId = googleId;		
+	}
+	public String getGoogleId() {
+		return googleId;
+	}
+	
 
 }
