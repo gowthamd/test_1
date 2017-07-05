@@ -1,6 +1,7 @@
 package com.trippal.utils;
 
 import java.io.StringReader;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.json.Json;

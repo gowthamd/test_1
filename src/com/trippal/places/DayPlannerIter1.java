@@ -1,10 +1,13 @@
 package com.trippal.places;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.trippal.places.apis.distance.service.DistanceFinderAPI;
 
 public class DayPlannerIter1 {
 
@@ -27,6 +30,12 @@ public class DayPlannerIter1 {
 	 * populate the size*size matrix with dst and time
 	 */
 	public void calculateDistanceAndKM() {
+		String placesString = "";
+		for(Places place : places){
+			placesString += place.getLocation().getLatitude()+','+place.getLocation().getLongtitude()+URLEncoder.encode("|");
+		}
+		DistanceFinderAPI distanceFinder = new DistanceFinderAPI();
+		String distanceMatrix = distanceFinder.calculateDistance(placesString, placesString, "kms");
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				inputMatrix[i][j] = createInput(i, j);

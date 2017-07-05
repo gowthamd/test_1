@@ -77,17 +77,11 @@ public class TPUtil {
 			Places place = convertTo(input);
 			place.setRank(++rank);
 			newList.add(place);
+			if(rank>6)break;
 		}
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
-		
-		for(Places placeObj : newList){
-			arrayBuilder.add(convertTo(placeObj, idToJson));
-		}
-		objectBuilder.add("places", arrayBuilder);
-		return objectBuilder.build();
-		/*
 		DayPlanner planner = new DayPlanner();
 		List<Input> plan = planner.planItenary(newList);
 		
@@ -103,7 +97,7 @@ public class TPUtil {
 		objectBuilder.add("result", arrayBuilder.build());
 		
 		System.out.println(System.currentTimeMillis()-startTime);
-		return objectBuilder.build();*/
+		return objectBuilder.build();
 	}
 
 	private static JsonObject convertTo(Places place, Map<String, JsonObject> idToJson) {

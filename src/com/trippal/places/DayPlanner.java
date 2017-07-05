@@ -1,7 +1,5 @@
 package com.trippal.places;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,12 +9,12 @@ public class DayPlanner {
 
 		// sort place based on ranking
 		int placeCount = places.size();
-		Collections.sort(places, new Comparator<Places>() {
+	/*	Collections.sort(places, new Comparator<Places>() {
 			@Override
 			public int compare(Places o1, Places o2) {
 				return o1.getRank() - o2.getRank();
 			}
-		});
+		});*/
 		
 		DayPlannerIter1 iter1 = new DayPlannerIter1(placeCount, places);
 		iter1.calculateDistanceAndKM();
