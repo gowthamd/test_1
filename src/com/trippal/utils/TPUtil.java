@@ -38,7 +38,7 @@ public class TPUtil {
 		System.out.println(nearByPlaces.toString());
 		JsonObject prominentPlace = TPUtil.getNearbyPlacesByProminence(place_id, 20000);
 		System.out.println(prominentPlace.toString());*/
-		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("coimbatore");
+		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("bangalore");
 		System.out.println(touristPlaces.toString());		
 	}
 
@@ -76,7 +76,7 @@ public class TPUtil {
 			Place place = convertTo(input);
 			place.setRank(++rank);
 			newList.add(place);
-			if(rank>7)break;
+			if(rank>8)break;
 		}
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -93,7 +93,7 @@ public class TPUtil {
 			inputObjectBuilder.add("rating", place.getRating());
 			inputObjectBuilder.add("latitute", place.getLocation().getLatitude());
 			inputObjectBuilder.add("longitude", place.getLocation().getLongtitude());
-			inputObjectBuilder.add("distancesToNextPlace", route.getTimeTaken(i++));
+			inputObjectBuilder.add("TimeTakenToNextPlace", route.getTimeTaken(i++));
 			arrayBuilder.add(inputObjectBuilder);
 		}
 		objectBuilder.add("result", arrayBuilder.build());
