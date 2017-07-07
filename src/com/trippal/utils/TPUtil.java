@@ -20,8 +20,8 @@ import com.trippal.places.Location;
 import com.trippal.places.Place;
 import com.trippal.places.Route;
 import com.trippal.places.TimeSlot;
-import com.trippaldal.dal.config.places.GooglePlacesDao;
-import com.trippaldal.dal.config.places.GooglePlacesDaoImpl;
+import com.trippaldal.dal.places.GooglePlacesDao;
+import com.trippaldal.dal.places.GooglePlacesDaoImpl;
 
 public class TPUtil {
 	
