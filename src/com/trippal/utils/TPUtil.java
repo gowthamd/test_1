@@ -20,8 +20,8 @@ import com.trippal.places.Location;
 import com.trippal.places.Place;
 import com.trippal.places.Route;
 import com.trippal.places.TimeSlot;
-import com.trippaldal.dal.places.GooglePlacesDao;
-import com.trippaldal.dal.places.GooglePlacesDaoImpl;
+import com.trippaldal.dal.config.places.GooglePlacesDao;
+import com.trippaldal.dal.config.places.GooglePlacesDaoImpl;
 
 public class TPUtil {
 	
@@ -32,7 +32,6 @@ public class TPUtil {
 		System.out.println(jsonObject.toString());
 		String place_id = jsonObject.getJsonArray("destinations").getJsonObject(0).getJsonArray("cities").getJsonObject(0).getString("id");
 		//String place_id = "ChIJbU60yXAWrjsR4E9-UejD3_g"; //Bangalore
-		//String place_id = "ChIJv8a-SlENCDsRkkGEpcqC1Qs";//Kochi
 		JsonObject location = TPUtil.getPlaceDetailsById(place_id);
 		JsonObject nearByPlaces = TPUtil.getNearbyPlacesByRating(place_id, 50000);
 		System.out.println(nearByPlaces.toString());
