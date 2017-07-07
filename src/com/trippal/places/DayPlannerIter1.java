@@ -1,72 +1,87 @@
 package com.trippal.places;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.trippal.places.apis.distance.service.DistanceFinderAPI;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class DayPlannerIter1 {
 
-	Input[][] inputMatrix;
-	int size;
-	List<Places> places;
+	/**
+	 * 
+	 * NxN matrix contains time taken from ith position to jth position
+	 * 
+	 */
+	LocalTime[][] distanceMatrix;
+	Place startPlace;
+	List<Place> places;
+	// have all possible combination routes made from places list
+	List<Route> routes = new ArrayList<Route>();
+	DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
 
 	/**
 	 * 
-	 * @param size
-	 * @param places {startPlace,p1,p2,p3,p4,p5,p6,p7}
+	 * @param startPlace
+	 * @param places
+	 *            {p1,p2,p3,p4,p5,p6,p7}
 	 */
-	public DayPlannerIter1(int size, List<Places> places) {
-		this.size = size;
+	public DayPlannerIter1(Place startPlace, List<Place> places) {
+		this.startPlace = startPlace;
 		this.places = places;
-		inputMatrix = new Input[size][size];
+		distanceMatrix = new LocalTime[places.size() + 1][places.size() + 1];
+		calculateDistanceAndKM();
+		generateValidRoutes(places, new ArrayList<Integer>(), new Route(startPlace), routes, true);
+	}
+
+	/**
+	 * 
+	 * generates all possible valid routes from given places list
+	 * 
+	 * @param places
+	 * @param visitedPositions
+	 * @param route
+	 * @param routes
+	 * @param firstPass
+	 */
+	public void generateValidRoutes(List<Place> places, List<Integer> visitedPositions, Route route, List<Route> routes,
+			boolean firstPass) {
+		if (visitedPositions.size() == places.size()) {
+			return;
+		}
+		for (int i = 0; i < places.size(); i++) {
+			List<Place> prevPlace = new ArrayList<>();
+			if (firstPass) {
+				visitedPositions = new ArrayList<Integer>();
+			} else if (visitedPositions.size() != 0) {
+				for (int j = 0; j <= visitedPositions.size() - 1; j++) {
+					prevPlace.add(route.getRoute().get(j));
+				}
+			}
+			if (!visitedPositions.contains(i)) {
+				route = new Route(startPlace);
+				route.setRoute(prevPlace);
+				route.addPlace(places.get(i));
+				if (isValidRoute(route)) {
+					routes.add(route);
+					visitedPositions.add(i);
+					generateValidRoutes(places, visitedPositions, route, routes, false);
+					visitedPositions.remove(visitedPositions.size() - 1);
+				}
+			}
+		}
 	}
 
 	/**
 	 * populate the size*size matrix with dst and time
 	 */
-	public void calculateDistanceAndKM() {
-		String placesString = "";
-		for(Places place : places){
-			placesString += place.getLocation().getLatitude()+','+place.getLocation().getLongtitude()+URLEncoder.encode("|");
-		}
-		DistanceFinderAPI distanceFinder = new DistanceFinderAPI();
-		String distanceMatrix = distanceFinder.calculateDistance(placesString, placesString, "kms");
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				inputMatrix[i][j] = createInput(i, j);
+	private void calculateDistanceAndKM() {
+		for (int i = 0; i < places.size() + 1; i++) {
+			for (int j = 0; j < places.size() + 1; j++) {
+				distanceMatrix[i][j] = calculateTime(i, j);
 			}
 		}
-	}
-
-	private Input createInput(int i, int j) {
-		Places place1 = places.get(i);
-		Places place2 = places.get(j);
-		int timeTakenToTravel = calculateTime(place1, place2);
-		int dstToTravel = calculateDst(place1, place2);
-		Input obj = new Input();
-		obj.setTime(timeTakenToTravel);
-		obj.setDistances(dstToTravel);
-		obj.setFromPlace(place1);
-		obj.setToPlace(place2);
-		return obj;
-	}
-
-	/**
-	 * returns Distance to travel from place1 to place2 in kms
-	 * 
-	 * @param place1
-	 * @param place2
-	 * @return
-	 */
-	private int calculateDst(Places place1, Places place2) {
-		// TODO as of now returning 60 ,need to factor-in the actual dst by
-		// calling distance API
-		return 60;
 	}
 
 	/**
@@ -76,72 +91,36 @@ public class DayPlannerIter1 {
 	 * @param place2
 	 * @return
 	 */
-	private int calculateTime(Places place1, Places place2) {
-		// TODO as of now returning 60 ,need to factor-in the actual time by
+	private LocalTime calculateTime(int fromPosition, int toPosition) {
+		// TODO as of now returning 60mins or 1 hour ,need to factor-in the
+		// actual time by
 		// calling distance API
-		return 60;
+		return formatter.parseLocalTime("1:00");
 	}
 
-	/**
-	 * calculate paths from the matrix calculated
-	 * 
-	 * @return
-	 */
-	public Map<Integer, List<Input>> calculatePath() {
-
-		Map<Integer, List<Input>> totalDstToPathsMap = new HashMap<Integer, List<Input>>();
-		List<Input[]> routeList = CalculatePossiblePathCombos.generate(inputMatrix);
-		
-		for(Input[] route : routeList) {
-			
-			//if path combo is valid then add to map
-			if(idValidCombo(route)) {
-				int totalKms = getTotalKmsFromCombo(route);
-				totalDstToPathsMap.put(totalKms, Arrays.asList(route));
-			}			
-		}
-		return totalDstToPathsMap;
+	public List<Route> getValidRoutes() {
+		return routes;
 	}
 
-	/**
-	 * get total kms in covering the route
-	 * @param combo
-	 * @return
-	 */
-	private int getTotalKmsFromCombo(Input[] route) {
-		int totalKms = 0;
-		for(Input iter : route) {
-			totalKms += iter.getDistances();
-		}
-		return totalKms;
-	}
+	private boolean isValidRoute(Route route) {
+		// startTIme 9.00 am and endTime is 6.00pm
+		LocalTime startTime = formatter.parseLocalTime("9:00");
+		// for all route from position will be from startPosition
+		int fromPosition = 0;
+		for (Place place : route.getRoute()) {
+			int toPosition = place.getRank();
+			LocalTime travelTime = distanceMatrix[fromPosition][toPosition];
+			route.updateTimeTaken(travelTime);
+			startTime = startTime.plusHours(travelTime.getHourOfDay());
+			startTime = startTime.plusMinutes(travelTime.getMinuteOfHour());
 
-	/**
-	 * check whether this route is a valid route
-	 * @param route
-	 * @return
-	 */
-	private boolean idValidCombo(Input[] route) {
-		Places fromPalce = null;
-		Places toPalce = null;
-		List<Places> coveredPlaces = new ArrayList<>();
-		for (Input iter :route) {
-			fromPalce = iter.getFromPlace();
-			toPalce = iter.getToPlace(); 
-			
-			//adding from place for the first time only
-			if(coveredPlaces.isEmpty()) {
-				coveredPlaces.add(fromPalce);
-			}
-			
-			//this places is already added so not a valid combo path
-			if(coveredPlaces.contains(toPalce)) {
+			// adding 90mins or 1 hour and 30 minutes as time to spend at this
+			// place.
+			startTime = startTime.plusMinutes(60);
+			// if this route goes beyond 6.00 pm then not a valid route
+			if (startTime.getHourOfDay() > 18) {
 				return false;
 			}
-			
-			coveredPlaces.add(toPalce);
-			
-			
 		}
 		return true;
 	}

@@ -1,37 +1,45 @@
 package com.trippal.places;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class DayPlannerIter2 {
-	
+
 	int[] weightageMatrix;
-	
-	public DayPlannerIter2(){
-		weightageMatrix = new int[5];
-		weightageMatrix[0]=200;
-		weightageMatrix[1]=160;
-		weightageMatrix[2]=100;
-		weightageMatrix[3]=30;
-		weightageMatrix[4]=5;		
+
+	public DayPlannerIter2() {
+		weightageMatrix = new int[10];
+		weightageMatrix[0] = 4000;
+		weightageMatrix[1] = 3920;
+		weightageMatrix[2] = 3760;
+		weightageMatrix[3] = 3520;
+		weightageMatrix[4] = 3300;
+		weightageMatrix[5] = 2900;
+		weightageMatrix[6] = 2420;
+		weightageMatrix[7] = 1860;
+		weightageMatrix[8] = 1220;
+		weightageMatrix[9] = 500;
 	}
-	
-	public Integer identifySuitablePathBasedOnWeightage(Map<Integer, List<Input>> totalDstToPathsMap){
-		int maxWeightage =0;
-		int identifiedPathTotalDst  =0;
-		for(Map.Entry<Integer, List<Input>> entry :totalDstToPathsMap.entrySet()) {
-			List<Input> value = entry.getValue();
-			int totalWeightage =0;
-			for(Input ipt :value) {
-				int rank = ipt.getToPlace().getRank();
-				totalWeightage += weightageMatrix[rank-1];
+
+	public List<Route> identifySuitablePathBasedOnWeightage(List<Route> routes) {
+		int maxWeight = 0;
+		List<Route> maxWeightRoutes = new ArrayList<>();
+
+		for (Route route : routes) {
+			int curWeight = 0;
+			for (Place place : route.getRoute()) {
+				int position = place.getRank();
+				curWeight += weightageMatrix[position];
 			}
-			if(totalWeightage > maxWeightage) {
-				maxWeightage =totalWeightage;
-				identifiedPathTotalDst = entry.getKey();
+			if (curWeight > maxWeight) {
+				maxWeightRoutes.clear();
+				maxWeightRoutes.add(route);
+			} else if (curWeight == maxWeight) {
+				maxWeightRoutes.add(route);
 			}
 		}
-		return identifiedPathTotalDst;
+
+		return maxWeightRoutes;
 	}
 
 }

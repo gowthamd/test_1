@@ -1,21 +1,23 @@
 package com.trippal.places;
 
+
+
 public class Input {
 	int time;//in minutes fromPlace to toPlace
 	int distances;//in kms fromPlace to toPlace
 	
-	Places fromPlace;
-	Places toPlace;
-	public Places getFromPlace() {
+	Place fromPlace;
+	Place toPlace;
+	public Place getFromPlace() {
 		return fromPlace;
 	}
-	public void setFromPlace(Places fromPlace) {
+	public void setFromPlace(Place fromPlace) {
 		this.fromPlace = fromPlace;
 	}
-	public Places getToPlace() {
+	public Place getToPlace() {
 		return toPlace;
 	}
-	public void setToPlace(Places toPlace) {
+	public void setToPlace(Place toPlace) {
 		this.toPlace = toPlace;
 	}
 	public int getTime() {

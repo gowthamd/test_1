@@ -13,16 +13,15 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 
 import com.trippal.constants.TPConstants;
 import com.trippal.places.DayPlanner;
-import com.trippal.places.Input;
 import com.trippal.places.Location;
-import com.trippal.places.Places;
+import com.trippal.places.Place;
+import com.trippal.places.Route;
 import com.trippal.places.TimeSlot;
-import com.trippaldal.dal.config.places.GooglePlacesDao;
-import com.trippaldal.dal.config.places.GooglePlacesDaoImpl;
+//import com.trippaldal.dal.config.places.GooglePlacesDao;
+//import com.trippaldal.dal.config.places.GooglePlacesDaoImpl;
 
 public class TPUtil {
 	
@@ -39,7 +38,7 @@ public class TPUtil {
 		System.out.println(nearByPlaces.toString());
 		JsonObject prominentPlace = TPUtil.getNearbyPlacesByProminence(place_id, 20000);
 		System.out.println(prominentPlace.toString());*/
-		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("bangalore");
+		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("coimbatore");
 		System.out.println(touristPlaces.toString());		
 	}
 
@@ -71,36 +70,38 @@ public class TPUtil {
 		Map<String, JsonObject> idToJson = new HashMap<String, JsonObject>();
 		List<TPPlaceObj> placeList = convertToPlacesArray(googleResponse,idToJson,false,"touristplaces");
 
-		List<Places> newList = new ArrayList<Places>();
+		List<Place> newList = new ArrayList<Place>();
 		int rank = 0;
 		for(TPPlaceObj input : placeList){
-			Places place = convertTo(input);
+			Place place = convertTo(input);
 			place.setRank(++rank);
 			newList.add(place);
-			if(rank>6)break;
+			if(rank>7)break;
 		}
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 		DayPlanner planner = new DayPlanner();
-		List<Input> plan = planner.planItenary(newList);
+		Route route = planner.planItenary(new Place(),newList);
+
+		JsonObjectBuilder inputObjectBuilder = Json.createObjectBuilder();
+		int i=0;
 		
-		
-		for(Input input : plan){
-			JsonObjectBuilder inputObjectBuilder = Json.createObjectBuilder();
-			inputObjectBuilder.add("from-place", convertTo(input.getFromPlace(),idToJson));
-			inputObjectBuilder.add("to-place", convertTo(input.getToPlace(),idToJson));
-			inputObjectBuilder.add("time", input.getTime());
-			inputObjectBuilder.add("distances", input.getDistances());
+		for(Place place : route.getRoute()){
+			inputObjectBuilder.add("googleId", place.getGoogleId());
+			inputObjectBuilder.add("name", place.getName());
+			inputObjectBuilder.add("rating", place.getRating());
+			inputObjectBuilder.add("latitute", place.getLocation().getLatitude());
+			inputObjectBuilder.add("longitude", place.getLocation().getLongtitude());
+			inputObjectBuilder.add("distancesToNextPlace", route.getTimeTaken(i++));
 			arrayBuilder.add(inputObjectBuilder);
 		}
 		objectBuilder.add("result", arrayBuilder.build());
-		
 		System.out.println(System.currentTimeMillis()-startTime);
 		return objectBuilder.build();
 	}
 
-	private static JsonObject convertTo(Places place, Map<String, JsonObject> idToJson) {
+	private static JsonObject convertTo(Place place, Map<String, JsonObject> idToJson) {
 		JsonObjectBuilder placesObjectBuilder = Json.createObjectBuilder();
 		JsonObject placeJsonObj = idToJson.get(place.getGoogleId());
 		placesObjectBuilder.add("geometry", placeJsonObj.get("geometry"));
@@ -220,12 +221,14 @@ public class TPUtil {
 		return destinationResBuilder.build();
 	}
 	
-	private static Places convertTo(TPPlaceObj input) {
-		Places place = new Places();
+	private static Place convertTo(TPPlaceObj input) {
+		Place place = new Place();
 		Location location = new Location();
 		location.setLatitude(input.getGeometry().get("lat").toString());
 		location.setLongtitude(input.getGeometry().get("lng").toString());
 		place.setLocation(location);
+		place.setName(input.getName().toString());
+		place.setRating(input.getRating().toString());
 		place.setGoogleId(input.getGoogleId());
 		return place;
 	}
@@ -390,10 +393,10 @@ public class TPUtil {
 	public static String getGoogleAPIKey(){
 
 		if(apiKey == null){
-			GooglePlacesDao placesDao = new GooglePlacesDaoImpl();
-			apiKey = placesDao.getAPIKey();
+			//GooglePlacesDao placesDao = new GooglePlacesDaoImpl();
+			//apiKey = placesDao.getAPIKey();
 		}
 
-		return apiKey;
+		return "AIzaSyDhozxmXh6oh3CgHX481fyNYiPTFFPwwzs";
 	}
 }

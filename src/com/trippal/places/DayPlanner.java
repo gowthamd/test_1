@@ -1,30 +1,27 @@
 package com.trippal.places;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class DayPlanner {
 
-	public List<Input> planItenary(List<Places> places) {
+	public Route planItenary(Place startPlace, List<Place> places) {
 
 		// sort place based on ranking
-		int placeCount = places.size();
-	/*	Collections.sort(places, new Comparator<Places>() {
+		Collections.sort(places, new Comparator<Place>() {
 			@Override
-			public int compare(Places o1, Places o2) {
+			public int compare(Place o1, Place o2) {
 				return o1.getRank() - o2.getRank();
 			}
-		});*/
-		
-		DayPlannerIter1 iter1 = new DayPlannerIter1(placeCount, places);
-		iter1.calculateDistanceAndKM();
-		Map<Integer, List<Input>> totalDstToPathsMap = iter1.calculatePath();
-		
-		
+		});
+
+		DayPlannerIter1 iter1 = new DayPlannerIter1(startPlace, places);
+		List<Route> validRoutes = iter1.getValidRoutes();
+
 		DayPlannerIter2 iter2 = new DayPlannerIter2();
-		Integer identifiedPathTotalDst = iter2.identifySuitablePathBasedOnWeightage(totalDstToPathsMap);
-		List<Input> identifiedPath = totalDstToPathsMap.get(identifiedPathTotalDst);
-		return identifiedPath;
+		List<Route> maxWeightRoutes = iter2.identifySuitablePathBasedOnWeightage(validRoutes);
+		return maxWeightRoutes.get(0);
 	}
 
 }
