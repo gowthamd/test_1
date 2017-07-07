@@ -29,7 +29,7 @@ public class DayPlannerIter2 {
 			int curWeight = 0;
 			for (Place place : route.getRoute()) {
 				int position = place.getRank();
-				curWeight += weightageMatrix[position];
+				curWeight += weightageMatrix[position-1];
 			}
 			if (curWeight > maxWeight) {
 				maxWeightRoutes.clear();

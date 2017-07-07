@@ -20,8 +20,8 @@ import com.trippal.places.Location;
 import com.trippal.places.Place;
 import com.trippal.places.Route;
 import com.trippal.places.TimeSlot;
-//import com.trippaldal.dal.config.places.GooglePlacesDao;
-//import com.trippaldal.dal.config.places.GooglePlacesDaoImpl;
+import com.trippaldal.dal.config.places.GooglePlacesDao;
+import com.trippaldal.dal.config.places.GooglePlacesDaoImpl;
 
 public class TPUtil {
 	
@@ -71,12 +71,9 @@ public class TPUtil {
 		List<TPPlaceObj> placeList = convertToPlacesArray(googleResponse,idToJson,false,"touristplaces");
 
 		List<Place> newList = new ArrayList<Place>();
-		int rank = 0;
 		for(TPPlaceObj input : placeList){
 			Place place = convertTo(input);
-			place.setRank(++rank);
 			newList.add(place);
-			if(rank>8)break;
 		}
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -228,7 +225,7 @@ public class TPUtil {
 		location.setLongtitude(input.getGeometry().get("lng").toString());
 		place.setLocation(location);
 		place.setName(input.getName().toString());
-		place.setRating(input.getRating().toString());
+		place.setRating(input.getRating());
 		place.setGoogleId(input.getGoogleId());
 		return place;
 	}
@@ -393,10 +390,10 @@ public class TPUtil {
 	public static String getGoogleAPIKey(){
 
 		if(apiKey == null){
-			//GooglePlacesDao placesDao = new GooglePlacesDaoImpl();
-			//apiKey = placesDao.getAPIKey();
+			GooglePlacesDao placesDao = new GooglePlacesDaoImpl();
+			apiKey = placesDao.getAPIKey();
 		}
 
-		return "AIzaSyDhozxmXh6oh3CgHX481fyNYiPTFFPwwzs";
+		return apiKey;
 	}
 }

@@ -7,15 +7,15 @@ package com.trippal.places;
  */
 public class Place {
 	Integer rank;
-	String rating;
+	Double rating;
 	Location location;
 	private String name;
 	private String googlePlaceId;
 
-	public String getRating() {
+	public Double getRating() {
 		return rating;
 	}
-	public void setRating(String rating) {
+	public void setRating(Double rating) {
 		this.rating = rating;
 	}
 	public String getName() {
