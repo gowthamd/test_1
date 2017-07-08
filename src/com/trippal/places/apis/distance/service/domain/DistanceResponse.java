@@ -1,24 +1,26 @@
 package com.trippal.places.apis.distance.service.domain;
- 
+
+import org.joda.time.LocalTime;
+
 public class DistanceResponse {
 	
-	private String distance;
+	private String[][] distance;
 
-	private String duration;
+	private LocalTime[][] duration;
 
-	public String getDistance() {
+	public String[][] getDistance() {
 		return distance;
 	}
 
-	public void setDistance(String distance) {
+	public void setDistance(String[][] distance) {
 		this.distance = distance;
 	}
 
-	public String getDuration() {
+	public LocalTime[][] getDuration() {
 		return duration;
 	}
 
-	public void setDuration(String duration) {
+	public void setDuration(LocalTime[][] duration) {
 		this.duration = duration;
 	}
 	
