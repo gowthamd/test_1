@@ -20,8 +20,8 @@ import com.trippal.places.Location;
 import com.trippal.places.Place;
 import com.trippal.places.Route;
 import com.trippal.places.TimeSlot;
-//import com.trippaldal.dal.config.places.GooglePlacesDao;
-//import com.trippaldal.dal.config.places.GooglePlacesDaoImpl;
+//import com.trippaldal.dal.places.GooglePlacesDao;
+//import com.trippaldal.dal.places.GooglePlacesDaoImpl;
 
 public class TPUtil {
 	
@@ -32,13 +32,12 @@ public class TPUtil {
 		System.out.println(jsonObject.toString());
 		String place_id = jsonObject.getJsonArray("destinations").getJsonObject(0).getJsonArray("cities").getJsonObject(0).getString("id");
 		//String place_id = "ChIJbU60yXAWrjsR4E9-UejD3_g"; //Bangalore
-		//String place_id = "ChIJv8a-SlENCDsRkkGEpcqC1Qs";//Kochi
 		JsonObject location = TPUtil.getPlaceDetailsById(place_id);
 		JsonObject nearByPlaces = TPUtil.getNearbyPlacesByRating(place_id, 50000);
 		System.out.println(nearByPlaces.toString());
 		JsonObject prominentPlace = TPUtil.getNearbyPlacesByProminence(place_id, 20000);
 		System.out.println(prominentPlace.toString());*/
-		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("bangalore");
+		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("goa");
 		System.out.println(touristPlaces.toString());		
 	}
 
@@ -71,12 +70,9 @@ public class TPUtil {
 		List<TPPlaceObj> placeList = convertToPlacesArray(googleResponse,idToJson,false,"touristplaces");
 
 		List<Place> newList = new ArrayList<Place>();
-		int rank = 0;
 		for(TPPlaceObj input : placeList){
 			Place place = convertTo(input);
-			place.setRank(++rank);
 			newList.add(place);
-			if(rank>7)break;
 		}
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -93,7 +89,7 @@ public class TPUtil {
 			inputObjectBuilder.add("rating", place.getRating());
 			inputObjectBuilder.add("latitute", place.getLocation().getLatitude());
 			inputObjectBuilder.add("longitude", place.getLocation().getLongtitude());
-			inputObjectBuilder.add("distancesToNextPlace", route.getTimeTaken(i++));
+			inputObjectBuilder.add("TimeTakenToNextPlace", route.getTimeTaken(i++));
 			arrayBuilder.add(inputObjectBuilder);
 		}
 		objectBuilder.add("result", arrayBuilder.build());
@@ -228,7 +224,7 @@ public class TPUtil {
 		location.setLongtitude(input.getGeometry().get("lng").toString());
 		place.setLocation(location);
 		place.setName(input.getName().toString());
-		place.setRating(input.getRating().toString());
+		place.setRating(input.getRating());
 		place.setGoogleId(input.getGoogleId());
 		return place;
 	}

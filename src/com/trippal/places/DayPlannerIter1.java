@@ -36,7 +36,6 @@ public class DayPlannerIter1 {
 		this.startPlace = startPlace;
 		this.places = places;
 		timeMatrix = new LocalTime[places.size()][places.size()];
-		//calculateDistanceAndKM();
 		populateDistanceMatrix(places);
 		generateValidRoutes(places, new ArrayList<Integer>(), new Route(startPlace), routes, true);
 	}
@@ -89,31 +88,6 @@ public class DayPlannerIter1 {
 		}
 	}
 
-	/**
-	 * populate the size*size matrix with dst and time
-	 */
-	private void calculateDistanceAndKM() {
-		for (int i = 0; i < places.size(); i++) {
-			for (int j = 0; j < places.size(); j++) {
-				timeMatrix[i][j] = calculateTime(i, j);
-			}
-		}
-	}
-
-	/**
-	 * returns Distance to travel from place1 to place2 in minutes
-	 * 
-	 * @param place1
-	 * @param place2
-	 * @return
-	 */
-	private LocalTime calculateTime(int fromPosition, int toPosition) {
-		// TODO as of now returning 60mins or 1 hour ,need to factor-in the
-		// actual time by
-		// calling distance API
-		return formatter.parseLocalTime("1:00");
-	}
-
 	public List<Route> getValidRoutes() {
 		return routes;
 	}
@@ -126,6 +100,10 @@ public class DayPlannerIter1 {
 		for (Place place : route.getRoute()) {
 			int toPosition = place.getRank();
 			LocalTime travelTime = timeMatrix[fromPosition][toPosition-1];
+			//if timeMatrix doesn't have travel time then setting travel time to one hour
+			if(travelTime == null ){
+				travelTime = formatter.parseLocalTime("1:00");
+			}
 			route.updateTimeTaken(travelTime);
 			startTime = startTime.plusHours(travelTime.getHourOfDay());
 			startTime = startTime.plusMinutes(travelTime.getMinuteOfHour());
