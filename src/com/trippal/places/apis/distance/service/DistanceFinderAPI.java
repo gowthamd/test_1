@@ -59,7 +59,7 @@ public class DistanceFinderAPI {
 								if(times.length == 2){
 									time = new LocalTime(0, Integer.parseInt(times[0]));
 								}else{
-									System.out.println(">>>>>>>"+timeTaken);
+									time = new LocalTime(Integer.parseInt(times[0]), Integer.parseInt(times[2]));
 								}
 								duration[i][j] = time;
 							}
