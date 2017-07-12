@@ -7,6 +7,9 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import com.trippal.places.apis.distance.service.DistanceFinderAPI;
+import com.trippal.places.apis.distance.service.domain.DistanceResponse;
+
 public class DayPlannerIter1 {
 
 	/**
@@ -14,25 +17,37 @@ public class DayPlannerIter1 {
 	 * NxN matrix contains time taken from ith position to jth position
 	 * 
 	 */
-	LocalTime[][] distanceMatrix;
+	LocalTime[][] timeMatrix;
 	Place startPlace;
 	List<Place> places;
 	// have all possible combination routes made from places list
 	List<Route> routes = new ArrayList<Route>();
 	DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
+	DistanceResponse distanceMatrix;
 
 	/**
 	 * 
 	 * @param startPlace
 	 * @param places
 	 *            {p1,p2,p3,p4,p5,p6,p7}
+	 * @throws Exception 
 	 */
-	public DayPlannerIter1(Place startPlace, List<Place> places) {
+	public DayPlannerIter1(Place startPlace, List<Place> places) throws Exception {
 		this.startPlace = startPlace;
 		this.places = places;
-		distanceMatrix = new LocalTime[places.size() + 1][places.size() + 1];
-		calculateDistanceAndKM();
+		timeMatrix = new LocalTime[places.size()][places.size()];
+		populateDistanceMatrix(places);
 		generateValidRoutes(places, new ArrayList<Integer>(), new Route(startPlace), routes, true);
+	}
+
+	private void populateDistanceMatrix(List<Place> places) throws Exception {
+		String placesUri = "";
+		for(Place place: places){
+			placesUri += place.getLocation().getLatitude()+","+place.getLocation().getLongtitude()+"%7C";
+		}
+		DistanceFinderAPI finderAPI = new DistanceFinderAPI();
+		distanceMatrix = finderAPI.calculateDistanceMatrix(placesUri, placesUri, "kms");
+		timeMatrix = distanceMatrix.getDurationMatrix();
 	}
 
 	/**
@@ -73,31 +88,6 @@ public class DayPlannerIter1 {
 		}
 	}
 
-	/**
-	 * populate the size*size matrix with dst and time
-	 */
-	private void calculateDistanceAndKM() {
-		for (int i = 0; i < places.size() + 1; i++) {
-			for (int j = 0; j < places.size() + 1; j++) {
-				distanceMatrix[i][j] = calculateTime(i, j);
-			}
-		}
-	}
-
-	/**
-	 * returns Distance to travel from place1 to place2 in minutes
-	 * 
-	 * @param place1
-	 * @param place2
-	 * @return
-	 */
-	private LocalTime calculateTime(int fromPosition, int toPosition) {
-		// TODO as of now returning 60mins or 1 hour ,need to factor-in the
-		// actual time by
-		// calling distance API
-		return formatter.parseLocalTime("1:00");
-	}
-
 	public List<Route> getValidRoutes() {
 		return routes;
 	}
@@ -109,7 +99,11 @@ public class DayPlannerIter1 {
 		int fromPosition = 0;
 		for (Place place : route.getRoute()) {
 			int toPosition = place.getRank();
-			LocalTime travelTime = distanceMatrix[fromPosition][toPosition];
+			LocalTime travelTime = timeMatrix[fromPosition][toPosition-1];
+			//if timeMatrix doesn't have travel time then setting travel time to one hour
+			if(travelTime == null ){
+				travelTime = formatter.parseLocalTime("1:00");
+			}
 			route.updateTimeTaken(travelTime);
 			startTime = startTime.plusHours(travelTime.getHourOfDay());
 			startTime = startTime.plusMinutes(travelTime.getMinuteOfHour());

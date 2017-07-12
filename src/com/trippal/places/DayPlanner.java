@@ -6,9 +6,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class DayPlanner {
+	public Route planItenary(Place startPlace, List<Place> places) throws Exception {
 
-	public Route planItenary(Place startPlace, List<Place> places) {
-		// sort places based on rating
+		// sort place based on ranking
 		Collections.sort(places, new Comparator<Place>() {
 			@Override
 			public int compare(Place o1, Place o2) {
@@ -29,6 +29,13 @@ public class DayPlanner {
 
 	}
 
+	/**
+	 * take top ten places from the place list and add rank for the selected
+	 * places
+	 * 
+	 * @param places
+	 * @return
+	 */
 	private List<Place> getPlacesForRouteAlgo(List<Place> places) {
 		List<Place> placesForAlgo = new ArrayList<>();
 		int rank = 1;

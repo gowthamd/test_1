@@ -1,11 +1,14 @@
 package com.trippal.places.apis.distance.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
+
+import org.joda.time.LocalTime;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -53,6 +56,57 @@ public class DistanceFinderAPI {
 		}
 
 		return distanceResponse;
+	}
+
+	
+	public DistanceResponse calculateDistanceMatrix(@QueryParam(value = "origin") String origin,
+			@QueryParam(value = "destination") String destination, @QueryParam(value = "unit") String unit) {
+
+		RestClient client = new RestClient();
+		Map<String, Object> queryParams = buildRequestData(origin, destination, unit);
+		DistanceResponse response = new DistanceResponse();
+
+		try {
+			String googleResponse = client.getAsString(TPConstants.GOOGLE_MAPS_DISANCE_CALC_API, queryParams);
+			Gson gson = new GsonBuilder().create();
+			DistanceMatrix distanceMatrix = gson.fromJson(googleResponse, DistanceMatrix.class);
+
+			if (distanceMatrix != null && distanceMatrix.getRows() != null && !distanceMatrix.getRows().isEmpty()) {
+				int size = distanceMatrix.getRows().size();
+				String[][] distance = new String[size][size];
+				LocalTime[][] duration = new LocalTime[size][size];
+				for(int i=0;i<size;i++){
+					Row row = distanceMatrix.getRows().get(i);
+					if(row != null && row.getElements() != null && !row.getElements().isEmpty()){
+						List<Element> elements = row.getElements();
+						for(int j=0;j<size;j++){
+							Element element = elements.get(j);
+							
+							if(element.getDistance() != null && element.getDistance().getText() != null){
+								distance[i][j] = element.getDistance().getText();
+							}
+							if(element.getDuration() != null && element.getDuration().getText() != null){
+								String timeTaken = element.getDuration().getText();
+								String times[] = timeTaken.split(" ");
+								LocalTime time = null;
+								if(times.length == 2){
+									time = new LocalTime(0, Integer.parseInt(times[0]));
+								}else{
+									time = new LocalTime(Integer.parseInt(times[0]), Integer.parseInt(times[2]));
+								}
+								duration[i][j] = time;
+							}
+						}
+					}
+				}
+				response.setDistanceMatrix(distance);
+				response.setDurationMatrix(duration);
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		return response;
 	}
 
 	public Map<String, Object> buildRequestData(String origin, String destination, String unit) {

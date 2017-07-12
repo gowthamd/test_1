@@ -10,7 +10,7 @@ public class Route {
 	Place startPlace;
 
 	/**
-	 *  list of place to convered by this route
+	 *  list of place to covered by this route
 	 *  places are in order of visit
 	 */
 	private List<Place> route;
