@@ -46,8 +46,8 @@ public class DayPlannerIter1 {
 			placesUri += place.getLocation().getLatitude()+","+place.getLocation().getLongtitude()+"%7C";
 		}
 		DistanceFinderAPI finderAPI = new DistanceFinderAPI();
-		distanceMatrix = finderAPI.calculateDistance(placesUri, placesUri, "kms");
-		timeMatrix = distanceMatrix.getDuration();
+		distanceMatrix = finderAPI.calculateDistanceMatrix(placesUri, placesUri, "kms");
+		timeMatrix = distanceMatrix.getDurationMatrix();
 	}
 
 	/**
