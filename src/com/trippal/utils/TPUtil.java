@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -19,7 +22,6 @@ import com.trippal.places.DayPlanner;
 import com.trippal.places.Location;
 import com.trippal.places.Place;
 import com.trippal.places.Route;
-import com.trippal.places.TimeSlot;
 //import com.trippaldal.dal.places.GooglePlacesDao;
 //import com.trippaldal.dal.places.GooglePlacesDaoImpl;
 
@@ -28,17 +30,19 @@ public class TPUtil {
 	private static String apiKey = null;
 	
 	public static void main(String args[]) throws Exception {
-		/*JsonObject jsonObject = TPUtil.getAutoCompletePlaces("bangla",14);
+		JsonObject jsonObject = TPUtil.getAutoCompletePlaces("bangla",14);
 		System.out.println(jsonObject.toString());
 		String place_id = jsonObject.getJsonArray("destinations").getJsonObject(0).getJsonArray("cities").getJsonObject(0).getString("id");
 		//String place_id = "ChIJbU60yXAWrjsR4E9-UejD3_g"; //Bangalore
-		JsonObject location = TPUtil.getPlaceDetailsById(place_id);
+		//JsonObject location = TPUtil.getPlaceDetailsById(place_id);
 		JsonObject nearByPlaces = TPUtil.getNearbyPlacesByRating(place_id, 50000);
 		System.out.println(nearByPlaces.toString());
 		JsonObject prominentPlace = TPUtil.getNearbyPlacesByProminence(place_id, 20000);
-		System.out.println(prominentPlace.toString());*/
-		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("goa");
-		System.out.println(touristPlaces.toString());		
+		System.out.println(prominentPlace.toString());
+		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("bangalore");
+		System.out.println(touristPlaces.toString());
+		JsonObject suggestedTouristPlaces = TPUtil.getSuggestedTouristPlaces("bangalore");
+		System.out.println(suggestedTouristPlaces.toString());	
 	}
 
 	public static JsonObject getNearbyPlacesByRating(String placeId, int radius) throws Exception {
@@ -58,27 +62,14 @@ public class TPUtil {
 		return convertToPlacesJsonArray(googleResponse,false,"nearbyplaces");
 	}
 
-	public static JsonObject getNearbyTouristPlaces(String destination) throws Exception {
-		long startTime = System.currentTimeMillis();
-		String uri = TPConstants.GOOGLE_TEXT_SEARCH_API;
-		Map<String, Object> queryParams = new HashMap<>();
-		queryParams.put("key", getGoogleAPIKey());
-		queryParams.put("query", "tourist+places+in+"+destination);
-		RestClient restClient = new RestClient();
-		JsonObject googleResponse = restClient.get(uri, queryParams);
+	public static JsonObject getSuggestedTouristPlaces(String destination) throws Exception {
 		Map<String, JsonObject> idToJson = new HashMap<String, JsonObject>();
-		List<TPPlaceObj> placeList = convertToPlacesArray(googleResponse,idToJson,false,"touristplaces");
-
-		List<Place> newList = new ArrayList<Place>();
-		for(TPPlaceObj input : placeList){
-			Place place = convertTo(input);
-			newList.add(place);
-		}
+		List<Place> placeList = getTouristPlacesByName(destination, idToJson);
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 		DayPlanner planner = new DayPlanner();
-		Route route = planner.planItenary(new Place(),newList);
+		Route route = planner.planItenary(new Place(),placeList);
 
 		JsonObjectBuilder inputObjectBuilder = Json.createObjectBuilder();
 		int i=0;
@@ -93,7 +84,58 @@ public class TPUtil {
 			arrayBuilder.add(inputObjectBuilder);
 		}
 		objectBuilder.add("result", arrayBuilder.build());
-		System.out.println(System.currentTimeMillis()-startTime);
+		return objectBuilder.build();
+	}
+	
+	public static JsonObject getNearbyTouristPlaces(String destination) throws Exception{
+		Map<String, JsonObject> idToJson = new HashMap<String, JsonObject>();
+		List<Place> placeList = getTouristPlacesByName(destination, idToJson);
+		return convertTo(placeList, idToJson);
+	}
+	
+	private static List<Place> getTouristPlacesByName(String destination, Map<String, JsonObject> idToJson) throws Exception{
+		String uri = TPConstants.GOOGLE_TEXT_SEARCH_API;
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("key", getGoogleAPIKey());
+		queryParams.put("query", "tourist+places+in+"+destination);
+		RestClient restClient = new RestClient();
+		JsonObject googleResponse = restClient.get(uri, queryParams);
+		List<TPPlaceObj> placeList = convertToPlacesArray(googleResponse,idToJson,false,"touristplaces");
+		List<Place> newList = new ArrayList<Place>();
+		for(TPPlaceObj input : placeList){
+			Place place = convertTo(input);
+			newList.add(place);
+		}
+		long start = System.currentTimeMillis();
+		populateOpeningHours(newList);
+		long finish = System.currentTimeMillis();
+		System.out.printf("Start : %d \nEnd : %d\nDiff: %d\n ",start,finish,finish-start);
+		return newList;
+	}
+
+	private static void populateOpeningHours(List<Place> placeList) {
+		ExecutorService es = Executors.newCachedThreadPool();
+		CountDownLatch cl = new CountDownLatch(placeList.size());
+		for(Place placeObj : placeList){
+			PlaceDetailsPopulator detailPopulator = new PlaceDetailsPopulator(cl, placeObj);
+			es.submit(detailPopulator);
+		}
+		try {
+			cl.await();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private static JsonObject convertTo(List<Place> placeList, Map<String, JsonObject> idToJson){
+		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+		for(Place place : placeList){
+			arrayBuilder.add(convertTo(place, idToJson));
+		}
+		objectBuilder.add("tourist-places", arrayBuilder.build());
 		return objectBuilder.build();
 	}
 
@@ -101,9 +143,14 @@ public class TPUtil {
 		JsonObjectBuilder placesObjectBuilder = Json.createObjectBuilder();
 		JsonObject placeJsonObj = idToJson.get(place.getGoogleId());
 		placesObjectBuilder.add("geometry", placeJsonObj.get("geometry"));
-		placesObjectBuilder.add("rank", place.getRank());
 		placesObjectBuilder.add("name", placeJsonObj.get("name"));
 		placesObjectBuilder.add("rating", placeJsonObj.get("rating"));
+		JsonObjectBuilder openingHours = Json.createObjectBuilder();
+		if(null != place.getOpeningHour(6)){
+			openingHours.add("open", place.getOpeningHour(6).toString());
+			openingHours.add("close", place.getClosingHour(6).toString());
+			placesObjectBuilder.add("opening_hours", openingHours);
+		}
 		return placesObjectBuilder.build();
 	}
 
@@ -121,15 +168,13 @@ public class TPUtil {
 		return param;
 	}
 
-	private static JsonObject getPlaceDetailsById(String place_id) throws Exception {
+	public static JsonObject getPlaceDetailsById(String place_id) throws Exception {
 		String uri = TPConstants.GOOGLE_PLACE_DETAILS_API;
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("key", getGoogleAPIKey());
 		queryParams.put("placeid", place_id);
 		RestClient restClient = new RestClient();
-		long startTime = System.currentTimeMillis();
 		JsonObject googleResponse = restClient.get(uri, queryParams);
-		System.out.println("get details  " +(System.currentTimeMillis()-startTime));
 		return googleResponse.getJsonObject("result");
 	}
 	
@@ -285,28 +330,6 @@ public class TPUtil {
 		return tpPlaceObj;
 		
 	}
-	
-	private static TimeSlot getOpenedTime(JsonObject jsonObject) {
-		TimeSlot timeSlot = new TimeSlot();
-		if(null == jsonObject || jsonObject.getJsonArray("periods") == null){			
-			timeSlot.setDefaultTime();
-			return timeSlot;
-		}
-		JsonArray timings = jsonObject.getJsonArray("periods");
-		for(int i=0;i<timings.size();i++){
-			JsonObject time = timings.getJsonObject(i);
-			JsonObject openTime = time.getJsonObject("open");
-			JsonObject closeTime = time.getJsonObject("close");
-			if(null == closeTime){
-				timeSlot.setAlwaysOpen(true);
-				continue;
-			}
-			timeSlot.setTime(openTime.getInt("day"), Integer.parseInt(openTime.getString("time")), 
-					Integer.parseInt(time.getJsonObject("close").getString("time")));
-		}		
-		
-		return timeSlot;
-	}
 
 	private static JsonObject convertGooglePlaceToTPPlace(JsonObject place){
 		TPPlaceObj tpPlaceObj = new TPPlaceObj();
@@ -318,7 +341,7 @@ public class TPUtil {
 		tpPlaceObj.setTypes(place.get("types"));
 		Double rating = 0.0;
 		if(place.get("rating") != null){
-			rating = Double.parseDouble(place.getString("rating"));
+			rating = Double.parseDouble(place.get("rating").toString());
 		}
 		tpPlaceObj.setRating(rating);
 		JsonObjectBuilder tpPlaceObjBuilder = Json.createObjectBuilder();

@@ -14,16 +14,23 @@ public class TimeSlot {
 	public void setHoursToSpend(int hoursToSpend) {
 		this.hoursToSpend = hoursToSpend;
 	}
-	public Time getTime(int weekday) {
-		return timeMap.get(weekday);
+	public int getOpeningHour(int weekday) {
+		Time time = timeMap.get(weekday);
+		if(null == time){
+			return -1;
+		}
+		return time.getOpenTime();
+	}
+	public int getClosingHour(int weekday) {
+		Time time = timeMap.get(weekday);
+		if(null == time){
+			return -1;
+		}
+		return time.getCloseTime();
 	}
 	
 	public void setTime(int weekday, int open, int close) {
 		timeMap.put(weekday, new Time(open, close));
-	}
-	
-	public void setDefaultTime(){
-		timeMap.put(6, new Time(0,2359));
 	}
 
 	class Time{
