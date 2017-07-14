@@ -28,6 +28,13 @@ public class NearByPlacesAPIRest {
 	
 	@GET
 	@Path("/tourist-places")
+	public String getSuggestedTouristPlaces(@QueryParam(value = "destination") String destination) throws Exception {
+		JsonObject jsonObject = TPUtil.getSuggestedTouristPlaces(destination);
+		return jsonObject.toString();
+	}
+	
+	@GET
+	@Path("/tourist-places-all")
 	public String getNearByTouristPlaces(@QueryParam(value = "destination") String destination) throws Exception {
 		JsonObject jsonObject = TPUtil.getNearbyTouristPlaces(destination);
 		return jsonObject.toString();
