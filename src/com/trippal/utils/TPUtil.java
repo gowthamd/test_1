@@ -78,10 +78,7 @@ public class TPUtil {
 		long start = System.currentTimeMillis();
 		populateOpeningHours(newList);
 		long finish = System.currentTimeMillis();
-		for(Place place : newList){
-			System.out.println(place.getName()+" : open "+place.getOpeningHour(6)
-			+" : close "+place.getClosingHour(6));
-		}
+		System.out.printf("Start : %d \nEnd : %d\nDiff: %d\n ",start,finish,finish-start);
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
