@@ -22,7 +22,7 @@ public class NearByPlacesAPIRest {
 	@Path("/prominence")
 	public String getNearByPlacesByProminence(@QueryParam(value = "place-id") String placeId,
 			@QueryParam(value = "radius") Integer radius) throws Exception {
-		JsonObject jsonObject = TPUtil.getNearbyPlacesByRating(placeId, radius);
+		JsonObject jsonObject = TPUtil.getNearbyPlacesByProminence(placeId, radius);
 		return jsonObject.toString();
 	}
 	

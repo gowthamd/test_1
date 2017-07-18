@@ -39,7 +39,7 @@ public class TPUtil {
 		System.out.println(nearByPlaces.toString());
 		JsonObject prominentPlace = TPUtil.getNearbyPlacesByProminence(place_id, 20000);
 		System.out.println(prominentPlace.toString());
-		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("bangalore");
+		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("manali");
 		System.out.println(touristPlaces.toString());
 		JsonObject suggestedTouristPlaces = TPUtil.getSuggestedTouristPlaces("bangalore");
 		System.out.println(suggestedTouristPlaces.toString());	
