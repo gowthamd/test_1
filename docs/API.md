@@ -7,7 +7,7 @@
 
 * **Method:**
   
-  `GET`
+   GET
   
 *  **URL Params**
 
@@ -21,6 +21,8 @@
 * **Success Response:**
 
   * **Code:** 200 
+  
+  **Content:** 
   
   {"destinations":
 	[{"cities":
@@ -46,3 +48,48 @@
 
   <server>/rest/autocomplete/places?str=bang&region=2
   
+2. Near by places API sorted based on rating
+--------------------------------------------
+  API to get all the prominent places near a destination within a radius and sorted by rating
+
+* **URL**
+
+  /rest/nearbysearch/rating?place-id=<Google Id of the place>&radius=<radius in metres>
+
+* **Method:**
+
+   GET
+  
+*  **URL Params**
+
+   **Required:**
+ 
+   place-id=[string] The Google Id of the place
+   
+   radius=[integer] The radius within which to search in metres
+
+* **Success Response:**
+  
+  * **Code:** 200
+  
+    **Content:** 
+	
+	{"nearbyplaces":[
+		{<Name of Destination>:
+			{"location":
+				{"lat":<latitude>,"lng":<longitude>},
+				"name":<name>,
+				"rating":<rating>,
+				"types":[<list of place type this belongs to>]
+			}
+		},{...},
+		]
+	}
+ 
+* **Error Response:**
+
+  
+* **Sample Call:**
+
+  /rest/nearbysearch/rating?place-id=ChIJgWsCh7C4VTcRwgRZ3btjpY8&radius=50000
+
