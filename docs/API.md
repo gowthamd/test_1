@@ -180,3 +180,38 @@
   
 * **Sample Call:**
 	/rest/nearbysearch/tourist-places?destination=manali
+
+5. Distance Between Two Places
+------------------------------------------------
+  API to get the distance and the time to travel between two places
+
+* **URL**
+
+  /rest/distance/find?origin=<lat1,long1>&destination=<lat2,long2>&unit=kms
+
+* **Method:**
+
+   GET
+  
+*  **URL Params**
+
+   **Required:**
+ 
+   lat1=[string] Latitude of Source
+   long1=[string] Longitude of Source
+   lat2=[string] Latitude of Destination
+   long2=[string] Longitude of Destination
+
+* **Success Response:**
+  
+  * **Code:** 200
+  
+    **Content:** 
+	
+	{"distance":<distance>,"duration":<duration>}
+ 
+* **Error Response:**
+
+  
+* **Sample Call:**
+	/rest/distance/find?origin=32.248105,77.1854331&destination=32.2417774,77.1889494&unit=kms

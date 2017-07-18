@@ -24,6 +24,7 @@ import com.trippal.places.Place;
 import com.trippal.places.Route;
 //import com.trippaldal.dal.places.GooglePlacesDao;
 //import com.trippaldal.dal.places.GooglePlacesDaoImpl;
+import com.trippal.places.apis.distance.service.DistanceFinderAPI;
 
 public class TPUtil {
 	
@@ -42,7 +43,9 @@ public class TPUtil {
 		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("manali");
 		System.out.println(touristPlaces.toString());
 		JsonObject suggestedTouristPlaces = TPUtil.getSuggestedTouristPlaces("bangalore");
-		System.out.println(suggestedTouristPlaces.toString());	
+		System.out.println(suggestedTouristPlaces.toString());
+		DistanceFinderAPI finderAPI = new DistanceFinderAPI();
+		System.out.println(finderAPI.calculateDistance("ChIJHdPykcEVrjsRIr4v35kLEY4", "ChIJL2fQ53MWrjsRuN9D6aalLMY", "kms"));
 	}
 
 	public static JsonObject getNearbyPlacesByRating(String placeId, int radius) throws Exception {
