@@ -3,7 +3,7 @@
   Provides the list of cities and/or states and/or countries that matches with the string provided
 * **URL**
 
-  /rest/autocomplete/places?str=<text>&region=<region-type>
+  /rest/autocomplete/places?str=\<text\>&region=\<region-type\>
 
 * **Method:**
   
@@ -28,8 +28,8 @@
 	[{"cities":
 		[
 			{
-				"destination":<Destination>,
-				"id":<Google Place Id>
+				"destination":\<Destination\>,
+				"id":\<Google Place Id\>
 			},
 			{
 				.......
@@ -46,7 +46,7 @@
 
 * **Sample Call:**
 
-  <server>/rest/autocomplete/places?str=bang&region=2
+  \<server\>/rest/autocomplete/places?str=bang&region=2
   
 2. Near by places API sorted based on rating
 --------------------------------------------
@@ -54,7 +54,7 @@
 
 * **URL**
 
-  /rest/nearbysearch/rating?place-id=<Google Id of the place>&radius=<radius in metres>
+  /rest/nearbysearch/rating?place-id=\<Google Id of the place\>&radius=\<radius in metres\>
 
 * **Method:**
 
@@ -75,12 +75,12 @@
     **Content:** 
 	
 	{"nearbyplaces":[
-		{<Name of Destination>:
+		{\<Name of Destination\>:
 			{"location":
-				{"lat":<latitude>,"lng":<longitude>},
-				"name":<name>,
-				"rating":<rating>,
-				"types":[<list of place type this belongs to>]
+				{"lat":\<latitude\>,"lng":\<longitude\>},
+				"name":\<name\>,
+				"rating":\<rating\>,
+				"types":[\<list of place type this belongs to\>]
 			}
 		},{...},
 		]
@@ -101,7 +101,7 @@
 
 * **URL**
 
-  /rest/nearbysearch/prominence?place-id=<Google Id of the place>&radius=<radius in metres>
+  /rest/nearbysearch/prominence?place-id=\<Google Id of the place\>&radius=\<radius in metres\>
 
 * **Method:**
 
@@ -122,12 +122,12 @@
     **Content:** 
 	
 	{"nearbyplaces":[
-		{<Name of Destination>:
+		{\<Name of Destination\>:
 			{"location":
-				{"lat":<latitude>,"lng":<longitude>},
-				"name":<name>,
-				"rating":<rating>,
-				"types":[<list of place type this belongs to>]
+				{"lat":\<latitude\>,"lng":\<longitude\>},
+				"name":\<name\>,
+				"rating":\<rating\>,
+				"types":[\<list of place type this belongs to\>]
 			}
 		},{...},
 		]
@@ -146,7 +146,7 @@
 
 * **URL**
 
-  /rest/nearbysearch/tourist-places?destination=<destination>
+  /rest/nearbysearch/tourist-places?destination=<destination\>
 
 * **Method:**
 
@@ -187,7 +187,7 @@
 
 * **URL**
 
-  /rest/distance/find?origin=<lat1,long1>&destination=<lat2,long2>&unit=kms
+  /rest/distance/find?origin=\<lat1,long1\>&destination=\<lat2,long2\>&unit=kms
 
 * **Method:**
 
@@ -208,7 +208,7 @@
   
     **Content:** 
 	
-	{"distance":<distance>,"duration":<duration>}
+	{"distance":\<distance\>,"duration":\<duration\>}
  
 * **Error Response:**
 
