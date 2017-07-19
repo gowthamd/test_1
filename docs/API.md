@@ -146,7 +146,7 @@
 
 * **URL**
 
-  /rest/nearbysearch/tourist-places?destination=<destination\>
+  /rest/nearbysearch/tourist-places?destination=\<destination\>
 
 * **Method:**
 
