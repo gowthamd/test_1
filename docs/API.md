@@ -268,16 +268,16 @@
 
 * **URL**
 
-  <_/rest/modifyroute/modify_>
+  /rest/modifyroute/modify
 
 * **Method:**
   
-  <_`PUT`_>
+  `PUT`
 
 
 * **Data Params**
 
-  <_`{
+  `{
   "retained-places":
     [
     {"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}},
@@ -296,24 +296,17 @@
     .........
   ]
 
-}`_>
+}`
 
 * **Success Response:**
   
 
   * **Code:** 200 <br />
-    **Content:** `{ id : 12 }`
- 
-* **Error Response:**
-
-  <_Most endpoints will have many ways they can fail. From unauthorized access, to wrongful parameters etc. All of those should be liste d here. It might seem repetitive, but it helps prevent assumptions from being made where they should be._>
-
-  * **Code:** 401 UNAUTHORIZED <br />
-    **Content:** {"result":[
-	{"googleId":\<google-id\>,"name":\<name\,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\,"TimeTakenToNextPlace":\<time-taken\},
-	{...},
-	...
-	]}
+    **Content:** `{"result":[
+		{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\,"TimeTakenToNextPlace":\<time-taken\},
+		{....},
+		....
+		]}`
 
 * **Sample Call:**
 
