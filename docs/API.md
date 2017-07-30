@@ -1,5 +1,5 @@
-1. Autocomplete Places API
---------------------------
+**1. Autocomplete Places API**
+----
   Provides the list of cities and/or states and/or countries that matches with the string provided
 * **URL**
 
@@ -7,7 +7,7 @@
 
 * **Method:**
   
-   GET
+   `GET`
   
 *  **URL Params**
 
@@ -48,8 +48,8 @@
 
   \<server\>/rest/autocomplete/places?str=bang&region=2
   
-2. Near by places API sorted based on rating
---------------------------------------------
+**2. Near by places API sorted based on rating**
+----
   API to get all the prominent places near a destination within a radius and sorted by rating
 
 * **URL**
@@ -58,7 +58,7 @@
 
 * **Method:**
 
-   GET
+   `GET`
   
 *  **URL Params**
 
@@ -93,8 +93,8 @@
 
   /rest/nearbysearch/rating?place-id=ChIJgWsCh7C4VTcRwgRZ3btjpY8&radius=50000
 
-3. Near by places API sorted based on prominence
-------------------------------------------------
+**3. Near by places API sorted based on prominence**
+----
   API to get all the prominent places near a destination within a radius and sorted by prominence.
   This option sorts results based on their importance. Ranking will favor prominent places within the specified area. 
   Prominence can be affected by a place's ranking in Google's index, global popularity, and other factors.
@@ -105,7 +105,7 @@
 
 * **Method:**
 
-   GET
+   `GET`
   
 *  **URL Params**
 
@@ -140,8 +140,8 @@
 
   /rest/nearbysearch/prominence?place-id=ChIJgWsCh7C4VTcRwgRZ3btjpY8&radius=50000
   
- 4. Suggested Places API
-------------------------------------------------
+** 4. Suggested Places API**
+----
   API to get the optimal places to visit on a single day and the best route to take to cover these places.
 
 * **URL**
@@ -150,7 +150,7 @@
 
 * **Method:**
 
-   GET
+   `GET`
   
 *  **URL Params**
 
@@ -181,8 +181,8 @@
 * **Sample Call:**
 	/rest/nearbysearch/tourist-places?destination=manali
 
-5. Distance Between Two Places
-------------------------------------------------
+**5. Distance Between Two Places**
+----
   API to get the distance and the time to travel between two places
 
 * **URL**
@@ -191,7 +191,7 @@
 
 * **Method:**
 
-   GET
+   `GET`
   
 *  **URL Params**
 
@@ -216,8 +216,8 @@
 * **Sample Call:**
 	/rest/distance/find?origin=32.248105,77.1854331&destination=32.2417774,77.1889494&unit=kms
 	
-6. All Tourist Places API
-------------------------------------------------
+**6. All Tourist Places API**
+----
   API to get all the tourist places in a destination
 
 * **URL**
@@ -226,7 +226,7 @@
 
 * **Method:**
 
-   GET
+   `GET`
   
 *  **URL Params**
 
@@ -261,3 +261,82 @@
   
 * **Sample Call:**
 	/rest/nearbysearch/tourist-places-all?destination=bangalore
+	
+**7. Add/Remove Places API from the Suggested Route API Response**
+----
+  <_The API is used to add or remove a place in the suggested route._>
+
+* **URL**
+
+  <_/rest/modifyroute/modify_>
+
+* **Method:**
+  
+  <_`PUT`_>
+
+
+* **Data Params**
+
+  <_`{
+  "retained-places":
+    [
+    {"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}},
+    {.......},
+    .........
+    ]
+  ,
+    "removed-places":[
+    {"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}},
+    {.......},
+    .........
+  ],
+    "added-places":[
+    {"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}},
+    {.......},
+    .........
+  ]
+
+}`_>
+
+* **Success Response:**
+  
+
+  * **Code:** 200 <br />
+    **Content:** `{ id : 12 }`
+ 
+* **Error Response:**
+
+  <_Most endpoints will have many ways they can fail. From unauthorized access, to wrongful parameters etc. All of those should be liste d here. It might seem repetitive, but it helps prevent assumptions from being made where they should be._>
+
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:** {"result":[
+	{"googleId":\<google-id\>,"name":\<name\,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\,"TimeTakenToNextPlace":\<time-taken\},
+	{...},
+	...
+	]}
+
+* **Sample Call:**
+
+	URL : http://localhost:8080/rest/modifyroute/modify
+	Method : PUT
+	Content-Type : application/json
+	Request Body:
+`{
+  "retained-places":
+    [
+    {"googleId":"ChIJN1ZKKUkWrjsRzxIVM363-LE","name":"\"Bengaluru Palace\"","rating":4.1,"location":{"lat":"12.9986964","lng":"77.59202599999999"}},
+    {"googleId":"ChIJk0gN-2sWrjsRljNKfECgL9M","name":"\"Jawaharlal Nehru Planetarium\"","rating":4.2,"location":{"lat":"12.984865","lng":"77.5895718"}},
+    {"googleId":"ChIJL2fQ53MWrjsRuN9D6aalLMY","name":"\"Cubbon Park\"","rating":4.4,"location":{"lat":"12.9763472","lng":"77.59292839999999"}},
+    {"googleId":"ChIJHdPykcEVrjsRIr4v35kLEY4","name":"\"Lalbagh Botanical Garden\"","rating":4.4,"location":{"lat":"12.9507432","lng":"77.5847773"}}
+    ]
+  ,
+    "removed-places":[
+    {"googleId":"ChIJqZQybIEWrjsRezNLL4Ju2Gk","name":"\"National Gallery of Modern Art\"","rating":4.4,"location":{"lat":"12.989747","lng":"77.58815"}},
+    {"googleId":"ChIJVQ947HgWrjsRty7bPqHZG48","name":"\"St. Marks Cathedral\"","rating":4.5,"location":{"lat":"12.9760281","lng":"77.60028989999999"}},
+    {"googleId":"ChIJBw42C-09rjsRs7KmQUqyf3o","name":"\"ISKCON Bangalore\"","rating":4.5,"location":{"lat":"13.0096323","lng":"77.55107099999999"}}
+  ],
+    "added-places":[
+    {"googleId":"","name":"Bannerghatta Biological Park","rating":4.1,"location":{"lat":12.8003592,"lng":77.57760979999999}}
+  ]
+
+}`
