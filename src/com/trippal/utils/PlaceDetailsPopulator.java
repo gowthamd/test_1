@@ -5,8 +5,8 @@ import java.util.concurrent.CountDownLatch;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
-import com.trippal.places.Place;
-import com.trippal.places.TimeSlot;
+import com.trippal.places.apis.planner.Place;
+import com.trippal.places.apis.planner.TimeSlot;
 
 public class PlaceDetailsPopulator implements Runnable{
 	

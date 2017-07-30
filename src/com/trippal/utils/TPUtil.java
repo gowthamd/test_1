@@ -18,12 +18,10 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import com.trippal.constants.TPConstants;
-import com.trippal.places.DayPlanner;
-import com.trippal.places.Location;
-import com.trippal.places.Place;
-import com.trippal.places.Route;
-//import com.trippaldal.dal.places.GooglePlacesDao;
-//import com.trippaldal.dal.places.GooglePlacesDaoImpl;
+import com.trippal.places.apis.planner.DayPlanner;
+import com.trippal.places.apis.planner.Location;
+import com.trippal.places.apis.planner.Place;
+import com.trippal.places.apis.planner.Route;
 
 public class TPUtil {
 	
