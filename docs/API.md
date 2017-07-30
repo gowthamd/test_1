@@ -215,3 +215,49 @@
   
 * **Sample Call:**
 	/rest/distance/find?origin=32.248105,77.1854331&destination=32.2417774,77.1889494&unit=kms
+	
+6. All Tourist Places API
+------------------------------------------------
+  API to get all the tourist places in a destination
+
+* **URL**
+
+  /rest/nearbysearch/tourist-places-all?destination=\<destination\>
+
+* **Method:**
+
+   GET
+  
+*  **URL Params**
+
+   **Required:**
+ 
+   destination=[string] The Destination Place
+
+* **Success Response:**
+  
+  * **Code:** 200
+  
+    **Content:** 
+	
+	{"tourist-places":[
+		{"geometry":{
+			"location":{"lat":12.961937,"lng":77.63484699999999},
+			"viewport":{
+				"northeast":{"lat":12.9631570802915,"lng":77.6361762302915},
+				"southwest":{"lat":12.9604591197085,"lng":77.63347826970849}}
+			},
+			"name":"Ezz Holidays",
+			"rating":4.8,
+			"opening_hours":{"open":"09:30:00.000","close":"20:00:00.000"}
+		},
+		{....},
+		.....
+		]
+	}
+ 
+* **Error Response:**
+
+  
+* **Sample Call:**
+	/rest/nearbysearch/tourist-places-all?destination=bangalore
