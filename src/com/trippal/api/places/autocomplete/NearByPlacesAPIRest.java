@@ -1,4 +1,4 @@
-package com.trippal;
+package com.trippal.api.places.autocomplete;
 
 import javax.json.JsonObject;
 import javax.ws.rs.GET;
