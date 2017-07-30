@@ -18,6 +18,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import com.trippal.constants.TPConstants;
+import com.trippal.place.apis.planner.modify.ModifyRouteRequest;
 import com.trippal.places.apis.planner.DayPlanner;
 import com.trippal.places.apis.planner.Location;
 import com.trippal.places.apis.planner.Place;
@@ -63,7 +64,17 @@ public class TPUtil {
 	public static JsonObject getSuggestedTouristPlaces(String destination) throws Exception {
 		Map<String, JsonObject> idToJson = new HashMap<String, JsonObject>();
 		List<Place> placeList = getTouristPlacesByName(destination, idToJson);
+		return getSuggestedRoute(placeList);
 		
+	}
+	
+	public static JsonObject getModifiedRoute(ModifyRouteRequest modifyRequest) throws Exception{
+		List<Place> placeList = modifyRequest.getRetainedPlaces();
+		placeList.addAll(modifyRequest.getAddedPlaces());
+		return getSuggestedRoute(placeList);
+	}
+	
+	private static JsonObject getSuggestedRoute(List<Place> placeList) throws Exception{
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 		DayPlanner planner = new DayPlanner();
