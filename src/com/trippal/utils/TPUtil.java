@@ -316,29 +316,6 @@ public class TPUtil {
 		}
 		return destinationArrayBuilder.build();
 	}
-
-	private static boolean isTypeMatching(JsonObject jsonObject, String regionType) {
-		JsonArray regionArr = jsonObject.getJsonArray("types");
-		if ("countries".equals(regionType)) {
-			for (int i = 0; i < regionArr.size(); i++) {
-				String regionName = regionArr.getString(i);
-				if ("country".equalsIgnoreCase(regionName)) {
-					return true;
-				}
-			}
-
-		} else if ("states".equals(regionType)) {
-			for (int i = 0; i < regionArr.size(); i++) {
-				String regionName = regionArr.getString(i);
-				if ("administrative_area_level_1".equalsIgnoreCase(regionName)) {
-					return true;
-				}
-			}
-		} else {
-			return true;
-		}
-		return false;
-	}
  
 	/**
 	 * gets google api key from properties file(googleapi.properties)

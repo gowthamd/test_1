@@ -12,6 +12,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import com.trippal.constants.TPConstants;
@@ -29,6 +30,7 @@ public class AutoCompletePlaceAPIRest {
 	 */
 
 	@GET
+	@Produces("application/json")
 	@Path("/places")
 	public String getAutoCompletePlaces(@QueryParam(value = "str") String placeStr,
 			@QueryParam(value = "region") Integer regionType) throws Exception {

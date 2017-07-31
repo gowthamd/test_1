@@ -8,6 +8,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import com.trippal.constants.TPConstants;
@@ -27,9 +28,10 @@ public class PlacesDetailsAPI {
 	 */
 
 	@GET
+	@Produces("application/json")
 	@Path("/details")
 	public String getPlaceDetail(@QueryParam(value = "id") String placeId) throws Exception {
-		JsonObject jsonObject = getPlaceDetails(placeId);
+		JsonObject jsonObject = getPlaceDetails(placeId);		
 		return jsonObject.toString();
 	}
 	
