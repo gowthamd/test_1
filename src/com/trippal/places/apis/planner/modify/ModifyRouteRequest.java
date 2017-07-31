@@ -1,11 +1,11 @@
-package com.trippal.place.apis.planner.modify;
+package com.trippal.places.apis.planner.modify;
 
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.trippal.places.apis.planner.Place;
+import com.trippal.places.planner.Place;
 
 @XmlRootElement
 public class ModifyRouteRequest {

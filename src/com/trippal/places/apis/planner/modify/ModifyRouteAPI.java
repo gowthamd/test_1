@@ -1,4 +1,4 @@
-package com.trippal.place.apis.planner.modify;
+package com.trippal.places.apis.planner.modify;
 
 import javax.json.JsonObject;
 import javax.ws.rs.Consumes;

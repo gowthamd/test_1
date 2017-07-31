@@ -1,4 +1,4 @@
-package com.trippal.api.places.autocomplete;
+package com.trippal.places.apis.autocomplete;
 
 import java.util.ArrayList;
 import java.util.HashMap;

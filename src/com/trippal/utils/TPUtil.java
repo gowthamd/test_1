@@ -18,19 +18,19 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import com.trippal.constants.TPConstants;
-//import com.trippaldal.dal.places.GooglePlacesDao;
-//import com.trippaldal.dal.places.GooglePlacesDaoImpl;
+import com.trippaldal.dal.places.GooglePlacesDao;
+import com.trippaldal.dal.places.GooglePlacesDaoImpl;
 import com.trippal.places.apis.distance.service.DistanceFinderAPI;
-import com.trippal.place.apis.planner.modify.ModifyRouteRequest;
-import com.trippal.places.apis.planner.DayPlanner;
-import com.trippal.places.apis.planner.Location;
-import com.trippal.places.apis.planner.Place;
-import com.trippal.places.apis.planner.Route;
+import com.trippal.places.apis.planner.modify.ModifyRouteRequest;
+import com.trippal.places.planner.DayPlanner;
+import com.trippal.places.planner.Location;
+import com.trippal.places.planner.Place;
+import com.trippal.places.planner.Route;
 
 public class TPUtil {
 	
 	private static String apiKey = null;
-	
+	/*
 	public static void main(String args[]) throws Exception {
 		JsonObject jsonObject = TPUtil.getAutoCompletePlaces("bangla",14);
 		System.out.println(jsonObject.toString());
@@ -47,7 +47,7 @@ public class TPUtil {
 		System.out.println(suggestedTouristPlaces.toString());
 		DistanceFinderAPI finderAPI = new DistanceFinderAPI();
 		System.out.println(finderAPI.calculateDistance("ChIJHdPykcEVrjsRIr4v35kLEY4", "ChIJL2fQ53MWrjsRuN9D6aalLMY", "kms"));
-	}
+	}*/
 
 	public static JsonObject getNearbyPlacesByRating(String placeId, int radius) throws Exception {
 		String uri = TPConstants.GOOGLE_NEARBY_PLACES_API;
@@ -196,84 +196,6 @@ public class TPUtil {
 		JsonObject placeDetails = getPlaceDetailsById(place_id);
 		JsonObject location = placeDetails.getJsonObject("geometry").getJsonObject("location");
 		return location;
-	}
-
-	public static JsonObject getAutoCompletePlaces(String searchStr, Integer regionType) throws Exception {
-		String uri = TPConstants.GOOGLE_AUTOCOMPLETE_API;
-		Map<String, Object> queryParams = new HashMap<>();
-		queryParams.put("input", searchStr);
-		queryParams.put("key", getGoogleAPIKey());
-		RestClient restClient = new RestClient();
-
-		JsonObjectBuilder finalResBuilder = Json.createObjectBuilder();
-		JsonArrayBuilder regionArrayBuilder = Json.createArrayBuilder();
-		List<String> regionStr = getRegionList(regionType);
-		for (String type : regionStr) {
-			if ("cities".equals(type)) {
-				queryParams.put("type", "(cities)");
-			} else {
-				queryParams.put("type", "(regions)");
-			}
-			JsonObject googleResponse = restClient.get(uri, queryParams);
-			regionArrayBuilder.add(convertTo(googleResponse, type));
-		}
-
-		finalResBuilder.add("destinations", regionArrayBuilder.build());
-		return finalResBuilder.build();
-	}
-
-	private static List<String> getRegionList(Integer regionType) {
-		List<String> regionList = new ArrayList<String>();
-		if (regionType == 2) {
-			regionList.add("cities");
-		}
-		if (regionType == 4) {
-			regionList.add("states");
-		}
-		if (regionType == 8) {
-			regionList.add("countries");
-		}
-		if (regionType == 14) {
-			regionList.add("cities");
-			regionList.add("states");
-			regionList.add("countries");
-		}
-		if (regionType == 10) {
-			regionList.add("cities");
-			regionList.add("countries");
-		}
-		if (regionType == 6) {
-			regionList.add("cities");
-			regionList.add("states");
-		}
-		if (regionType == 12) {
-			regionList.add("states");
-			regionList.add("countries");
-		}
-		return regionList;
-	}
-
-	/**
-	 * convert google json response format to our json format
-	 * 
-	 * @param result
-	 * @return
-	 */
-	private static JsonObject convertTo(JsonObject result, String regionType) {
-		JsonArray array = (JsonArray) result.get("predictions");
-		JsonObjectBuilder destinationResBuilder = Json.createObjectBuilder();
-		JsonArrayBuilder destinationArrayBuilder = Json.createArrayBuilder();
-		for (int i = 0; i < array.size(); i++) {
-			boolean isSameType = isTypeMatching(array.getJsonObject(i), regionType);
-			if (isSameType) {
-				JsonObjectBuilder objResBuilder = Json.createObjectBuilder();
-				objResBuilder.add("destination", array.getJsonObject(i).getJsonString("description"));
-				objResBuilder.add("id", array.getJsonObject(i).getJsonString("place_id"));
-				destinationArrayBuilder.add(objResBuilder.build());
-			}
-		}
-		destinationResBuilder.add(regionType, destinationArrayBuilder.build());
-		return destinationResBuilder.build();
 	}
 	
 	private static Place convertTo(TPPlaceObj input) {
@@ -426,10 +348,10 @@ public class TPUtil {
 	public static String getGoogleAPIKey(){
 
 		if(apiKey == null){
-			//GooglePlacesDao placesDao = new GooglePlacesDaoImpl();
-			//apiKey = placesDao.getAPIKey();
+			GooglePlacesDao placesDao = new GooglePlacesDaoImpl();
+			apiKey = placesDao.getAPIKey();
 		}
 
-		return "AIzaSyDhozxmXh6oh3CgHX481fyNYiPTFFPwwzs";
+		return apiKey;
 	}
 }

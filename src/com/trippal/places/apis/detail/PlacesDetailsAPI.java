@@ -1,4 +1,4 @@
-package com.trippal.api.places.detail;
+package com.trippal.places.apis.detail;
 
 import java.util.HashMap;
 import java.util.Map;

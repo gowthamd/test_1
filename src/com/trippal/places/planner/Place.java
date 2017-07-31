@@ -1,4 +1,4 @@
-package com.trippal.places.apis.planner;
+package com.trippal.places.planner;
 
 import javax.xml.bind.annotation.XmlElement;
 

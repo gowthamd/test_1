@@ -121,8 +121,6 @@
 			<groupId>com.trippal.dal</groupId>
 			<artifactId>trippaldal</artifactId>
 			<version>1.0</version>
-    		<scope>system</scope>
-    		<systemPath>${project.basedir}/repo/com/trippal/dal/trippaldal/1.0/trippaldal-1.0.jar</systemPath>
 		</dependency>
 		<dependency>
             <groupId>joda-time</groupId>
