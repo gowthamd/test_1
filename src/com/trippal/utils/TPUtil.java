@@ -75,8 +75,11 @@ public class TPUtil {
 	
 	public static JsonObject getModifiedRoute(ModifyRouteRequest modifyRequest) throws Exception{
 		List<Place> placeList = modifyRequest.getRetainedPlaces();
+		if(modifyRequest.getAddedPlaces().size() == 0){
+			return getSuggestedRoute(placeList);
+		}
 		placeList.addAll(modifyRequest.getAddedPlaces());
-		return getSuggestedRoute(placeList);
+		return getSuggestedRoute(placeList);		
 	}
 	
 	private static JsonObject getSuggestedRoute(List<Place> placeList) throws Exception{
