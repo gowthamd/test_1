@@ -354,19 +354,7 @@
   `{
   "selected-place-ids":    `[\<google-id-list\>]`,
   "destination" : \<destination\>,
-  "all-places"	: `[
-		{
-			"location": {
-					"lat": 12.961937,
-					"lng": 77.63484699999999
-			},
-			"name": "Ezz Holidays",
-			"rating": 4.8,
-			"googleId": "ChIJ3RcPFRkUrjsRVJHcR7hCUUM"
-		}, 
-		{},
-		...
-		]`
+  "all-places"	: `[\<all-places-list\>]`
 }`
 	
 	**_The all-places param can be used to provide all the places in the destination. This will make server to avoid querying for the places_**
