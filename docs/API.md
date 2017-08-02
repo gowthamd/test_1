@@ -278,23 +278,23 @@
 * **Data Params**
 
   `{
-  *"retained-places"*:
-    [
-    {"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}},
+  "retained-places":
+    `[
+    `{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}}`,
     {.......},
     .........
-    ]
+    ]`
   ,
-    "removed-places":[
-    {"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}},
+    "removed-places":`[
+    `{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}}`,
     {.......},
     .........
-  ],
-    "added-places":[
-    {"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}},
+  ]`,
+    "added-places":`[
+    `{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}}`,
     {.......},
     .........
-  ]
+  ]`
 
 }`
 
@@ -351,8 +351,8 @@
 * **Data Params**
 
   `{
-  *"selected-place-ids"*:    `[\<google-id-list\>]`,
-  *"destination"* : \<destination\>,
+  "selected-place-ids":    `[\<google-id-list\>]`,
+  "destination" : \<destination\>,
   "all-places"	: `[
 		{
 			"location": {
@@ -367,7 +367,8 @@
 		...
 		]`
 }`
-	*The all-places param can be used to provide all the places in the destination. This will make server to avoid querying for the places*
+	
+	**The all-places param can be used to provide all the places in the destination. This will make server to avoid querying for the places**
 
 * **Success Response:**
   
