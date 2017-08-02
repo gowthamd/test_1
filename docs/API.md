@@ -140,7 +140,7 @@
 
   /rest/nearbysearch/prominence?place-id=ChIJgWsCh7C4VTcRwgRZ3btjpY8&radius=50000
   
-** 4. Suggested Places API**
+**4. Suggested Places API**
 ----
   API to get the optimal places to visit on a single day and the best route to take to cover these places.
 
