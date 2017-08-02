@@ -264,7 +264,7 @@
 	
 **7. Add/Remove Places API from the Suggested Route API Response**
 ----
-  <_The API is used to add or remove a place in the suggested route._>
+  _The API is used to add or remove a place in the suggested route._
 
 * **URL**
 
@@ -368,7 +368,7 @@
 		]`
 }`
 	
-	**The all-places param can be used to provide all the places in the destination. This will make server to avoid querying for the places**
+	**_The all-places param can be used to provide all the places in the destination. This will make server to avoid querying for the places_**
 
 * **Success Response:**
   
