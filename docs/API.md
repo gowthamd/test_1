@@ -278,7 +278,7 @@
 * **Data Params**
 
   `{
-  "retained-places":
+  *"retained-places"*:
     [
     {"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}},
     {.......},
@@ -333,3 +333,66 @@
   ]`
 
 }`
+
+**8. Add another day to the suggested Places API**
+----
+  _The API is used to add or remove a place in the suggested route._
+  
+
+* **URL**
+
+  /rest/modifyroute/nextday
+
+* **Method:**
+  
+  `PUT`
+
+
+* **Data Params**
+
+  `{
+  *"selected-place-ids"*:    `[\<google-id-list\>]`,
+  *"destination"* : \<destination\>,
+  "all-places"	: `[
+		{
+			"location": {
+					"lat": 12.961937,
+					"lng": 77.63484699999999
+			},
+			"name": "Ezz Holidays",
+			"rating": 4.8,
+			"googleId": "ChIJ3RcPFRkUrjsRVJHcR7hCUUM"
+		}, 
+		{},
+		...
+		]`
+}`
+	*The all-places param can be used to provide all the places in the destination. This will make server to avoid querying for the places*
+
+* **Success Response:**
+  
+
+  * **Code:** 200 <br />
+    **Content:** `{"result":[
+		{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\,"TimeTakenToNextPlace":\<time-taken\},
+		{....},
+		....
+		]}`
+
+* **Sample Call:**
+
+	URL : /rest/modifyroute/nextday
+	Method : PUT
+	Content-Type : application/json
+	Request Body:
+`{
+	"selected-place-ids":`["ChIJN1ZKKUkWrjsRzxIVM363-LE",
+			"ChIJk0gN-2sWrjsRljNKfECgL9M",
+			"ChIJL2fQ53MWrjsRuN9D6aalLMY",
+			"ChIJHdPykcEVrjsRIr4v35kLEY4",
+			"ChIJqZQybIEWrjsRezNLL4Ju2Gk",
+			"ChIJVQ947HgWrjsRty7bPqHZG48",
+			"ChIJ8VNf1mMWrjsRwsMEl564ksQ"]`,
+	"destination":"bangalore"
+}`
+
