@@ -336,7 +336,8 @@
 
 **8. Add another day to the suggested Places API**
 ----
-  _The API is used to add or remove a place in the suggested route._
+  _The API is used to add another day to the suggested route.
+  If the UI is having the all places details, that can be provided to speed up the response._
   
 
 * **URL**
