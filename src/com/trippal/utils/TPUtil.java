@@ -21,7 +21,8 @@ import com.trippal.constants.TPConstants;
 import com.trippaldal.dal.places.GooglePlacesDao;
 import com.trippaldal.dal.places.GooglePlacesDaoImpl;
 import com.trippal.places.apis.distance.service.DistanceFinderAPI;
-import com.trippal.places.apis.planner.modify.ModifyRouteRequest;
+import com.trippal.places.apis.planner.modifyroute.AddDayToRouteRequest;
+import com.trippal.places.apis.planner.modifyroute.ModifyRouteRequest;
 import com.trippal.places.planner.DayPlanner;
 import com.trippal.places.planner.Location;
 import com.trippal.places.planner.Place;
@@ -30,9 +31,9 @@ import com.trippal.places.planner.Route;
 public class TPUtil {
 	
 	private static String apiKey = null;
-	/*
+	
 	public static void main(String args[]) throws Exception {
-		JsonObject jsonObject = TPUtil.getAutoCompletePlaces("bangla",14);
+		/*JsonObject jsonObject = TPUtil.getAutoCompletePlaces("bangla",14);
 		System.out.println(jsonObject.toString());
 		String place_id = jsonObject.getJsonArray("destinations").getJsonObject(0).getJsonArray("cities").getJsonObject(0).getString("id");
 		//String place_id = "ChIJbU60yXAWrjsR4E9-UejD3_g"; //Bangalore
@@ -40,14 +41,14 @@ public class TPUtil {
 		JsonObject nearByPlaces = TPUtil.getNearbyPlacesByRating(place_id, 50000);
 		System.out.println(nearByPlaces.toString());
 		JsonObject prominentPlace = TPUtil.getNearbyPlacesByProminence(place_id, 20000);
-		System.out.println(prominentPlace.toString());
+		System.out.println(prominentPlace.toString());*/
 		JsonObject touristPlaces = TPUtil.getNearbyTouristPlaces("manali");
-		System.out.println(touristPlaces.toString());
+		System.out.println(touristPlaces.toString());/*
 		JsonObject suggestedTouristPlaces = TPUtil.getSuggestedTouristPlaces("bangalore");
 		System.out.println(suggestedTouristPlaces.toString());
 		DistanceFinderAPI finderAPI = new DistanceFinderAPI();
-		System.out.println(finderAPI.calculateDistance("ChIJHdPykcEVrjsRIr4v35kLEY4", "ChIJL2fQ53MWrjsRuN9D6aalLMY", "kms"));
-	}*/
+		System.out.println(finderAPI.calculateDistance("ChIJHdPykcEVrjsRIr4v35kLEY4", "ChIJL2fQ53MWrjsRuN9D6aalLMY", "kms"));*/
+	}
 
 	public static JsonObject getNearbyPlacesByRating(String placeId, int radius) throws Exception {
 		String uri = TPConstants.GOOGLE_NEARBY_PLACES_API;
@@ -71,6 +72,23 @@ public class TPUtil {
 		List<Place> placeList = getTouristPlacesByName(destination, idToJson);
 		return getSuggestedRoute(placeList);
 		
+	}
+	
+
+
+	public static JsonObject getNextdayRoute(AddDayToRouteRequest addDayToRouteRequest) throws Exception {
+		List<Place> placeList = addDayToRouteRequest.getAllPlaceList();
+		if(null == placeList || placeList.size() == 0){
+			placeList = getTouristPlacesByName(addDayToRouteRequest.getDestination(), new HashMap<String, JsonObject>());
+		}
+		Iterator<Place> placeIter = placeList.iterator();
+		List<String> selectedList = addDayToRouteRequest.getSelectedPlacesList();
+		while(placeIter.hasNext()){
+			if(selectedList.contains(placeIter.next().getGoogleId())){
+				placeIter.remove();
+			}
+		}
+		return getSuggestedRoute(placeList);
 	}
 	
 	public static JsonObject getModifiedRoute(ModifyRouteRequest modifyRequest) throws Exception{
@@ -162,6 +180,7 @@ public class TPUtil {
 		placesObjectBuilder.add("geometry", placeJsonObj.get("geometry"));
 		placesObjectBuilder.add("name", placeJsonObj.get("name"));
 		placesObjectBuilder.add("rating", placeJsonObj.get("rating"));
+		placesObjectBuilder.add("googleId", place.getGoogleId());
 		JsonObjectBuilder openingHours = Json.createObjectBuilder();
 		if(null != place.getOpeningHour(6)){
 			openingHours.add("open", place.getOpeningHour(6).toString());
