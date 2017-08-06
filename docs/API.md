@@ -303,9 +303,9 @@
     `{.......}`
   ]`,
   
-  "destination":\<destination\>
+	"destination":\<destination\>,
   
-  "do-refresh":\<true\\false\>
+	"do-refresh":\<true\\false\>
 
 }`
 
@@ -313,12 +313,13 @@
   
 
   * **Code:** 200 <br />
-    **Content:** `{"result":[
+    **Content:** 
+	`{"result":`[
 		{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\,"TimeTakenToNextPlace":\<time-taken\>,"rank":\<rank\>,
 		"time-to-spent":{"hours":\<hours\>,"minutes":\<minutes\>}},
 		{....},
-		....
-		]}`
+		{....}
+		]`}`
 
 * **Sample Call:**
 
