@@ -5,6 +5,7 @@ import java.util.concurrent.CountDownLatch;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
+import com.trippal.constants.PlaceConstants;
 import com.trippal.places.planner.Place;
 import com.trippal.places.planner.TimeSlot;
 

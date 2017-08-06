@@ -17,12 +17,14 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
+import com.trippal.constants.PlaceConstants;
 import com.trippal.constants.TPConstants;
 import com.trippaldal.dal.places.GooglePlacesDao;
 import com.trippaldal.dal.places.GooglePlacesDaoImpl;
 import com.trippal.places.apis.distance.service.DistanceFinderAPI;
 import com.trippal.places.apis.planner.modifyroute.AddDayToRouteRequest;
 import com.trippal.places.apis.planner.modifyroute.ModifyRouteRequest;
+import com.trippal.places.apis.planner.modifyroute.UpdateTimeToSpentRequest;
 import com.trippal.places.planner.DayPlanner;
 import com.trippal.places.planner.Location;
 import com.trippal.places.planner.Place;
@@ -100,6 +102,11 @@ public class TPUtil {
 		return getSuggestedRoute(placeList);		
 	}
 	
+	public static JsonObject getModifiedRoute(UpdateTimeToSpentRequest updateTimeToSpentRequest) throws Exception{
+		List<Place> placeList = updateTimeToSpentRequest.getSelectedPlaces();
+		return getSuggestedRoute(placeList);		
+	}
+	
 	private static JsonObject getSuggestedRoute(List<Place> placeList) throws Exception{
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
@@ -116,6 +123,11 @@ public class TPUtil {
 			inputObjectBuilder.add("latitute", place.getLocation().getLatitude());
 			inputObjectBuilder.add("longitude", place.getLocation().getLongtitude());
 			inputObjectBuilder.add("TimeTakenToNextPlace", route.getTimeTaken(i++));
+			JsonObjectBuilder timeToSpentJson = Json.createObjectBuilder();
+			String[] timeToSpent = place.getTimeToSpent().split(":");
+			timeToSpentJson.add("hours", timeToSpent[0]);
+			timeToSpentJson.add("minutes", timeToSpent[1]);
+			inputObjectBuilder.add("time-to-spent", timeToSpentJson);
 			arrayBuilder.add(inputObjectBuilder);
 		}
 		objectBuilder.add("result", arrayBuilder.build());
@@ -187,6 +199,11 @@ public class TPUtil {
 			openingHours.add("close", place.getClosingHour(6).toString());
 			placesObjectBuilder.add("opening_hours", openingHours);
 		}
+		String[] timeToSpent = place.getTimeToSpent().split(":");
+		JsonObjectBuilder timeToSpentJson = Json.createObjectBuilder();
+		timeToSpentJson.add("hours", timeToSpent[0]);
+		timeToSpentJson.add("minutes", timeToSpent[1]);
+		placesObjectBuilder.add("time-to-spent", timeToSpentJson);
 		return placesObjectBuilder.build();
 	}
 
@@ -229,6 +246,14 @@ public class TPUtil {
 		place.setName(input.getName().toString());
 		place.setRating(input.getRating());
 		place.setGoogleId(input.getGoogleId());
+		JsonArray typeArray = (JsonArray) input.getTypes();
+		for(int i=0;i<typeArray.size();i++){
+			if(typeArray.getString(i).trim().equals("point_of_interest")){
+				continue;
+			}
+			place.setTimeToSpent(PlaceConstants.getTimeToSpent(PlaceConstants.find(typeArray.getString(i).trim())));
+			break;
+		}
 		return place;
 	}
 	

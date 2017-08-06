@@ -29,5 +29,14 @@ public class ModifyRouteAPI {
 		JsonObject jsonObject = TPUtil.getNextdayRoute(addDayToRouteRequest);
 		return jsonObject.toString();
 	}
+	
+	@PUT
+	@Path("/timetospent")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces(MediaType.TEXT_PLAIN)
+	public String updateTimeToSpent(UpdateTimeToSpentRequest updateTimeToSpentRequest) throws Exception {
+		JsonObject jsonObject = TPUtil.getModifiedRoute(updateTimeToSpentRequest);
+		return jsonObject.toString();
+	}
 
 }

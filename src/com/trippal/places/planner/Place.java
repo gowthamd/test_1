@@ -19,6 +19,8 @@ public class Place {
 	private String name;
 	@XmlElement(name="googleId")
 	private String googlePlaceId;
+	@XmlElement(name="time-to-spent")
+	private String timeToSpent;
 	private LocalTime[][] timeSlots = new LocalTime[7][2];
 	private boolean isAlwaysOpen = false;
 
@@ -92,6 +94,12 @@ public class Place {
 			timeSlots[i][1] = new LocalTime(18,0);
 		}
 		
+	}
+	public String getTimeToSpent() {
+		return timeToSpent;
+	}
+	public void setTimeToSpent(String timeToSpent) {
+		this.timeToSpent = timeToSpent;
 	}
 	
 	
