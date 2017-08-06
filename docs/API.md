@@ -198,10 +198,13 @@
 
    **Required:**
  
-   lat1=[string] Latitude of Source
-   long1=[string] Longitude of Source
-   lat2=[string] Latitude of Destination
-   long2=[string] Longitude of Destination
+   lat1=[string] 	Latitude of Source
+   
+   long1=[string] 	Longitude of Source
+   
+   lat2=[string] 	Latitude of Destination
+   
+   long2=[string] 	Longitude of Destination
 
 * **Success Response:**
   
@@ -250,7 +253,9 @@
 			},
 			"name":"Ezz Holidays",
 			"rating":4.8,
-			"opening_hours":{"open":"09:30:00.000","close":"20:00:00.000"}
+			"opening_hours":{"open":"09:30:00.000","close":"20:00:00.000"},
+			"google-id":\<google-id\>,
+			"time-to-spent": { "hours": \<hours\>,	"minutes": \<minutes\>	}
 		},
 		{....},
 		.....
@@ -263,9 +268,12 @@
 * **Sample Call:**
 	/rest/nearbysearch/tourist-places-all?destination=bangalore
 	
-**7. Add/Remove Places API from the Suggested Route API Response**
+**7. Modify Places to Visit API from the Suggested Route API Response**
 ----
-  _The API is used to add or remove a place in the suggested route._
+  _The API is used to add or remove a place in the suggested route.
+  The time to spent at each location can also be altered.
+  This API can lead to changes in the suggested route as editing or adding/removing will re run the route algorithm
+  If there is only changes in the order of visit of places, the refresh key need to be set to false to avoid re running the algorithm_
 
 * **URL**
 
@@ -281,21 +289,23 @@
   `{
   "retained-places":
     `[
-    `{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}}`,
+    `{"googleId":\<google-id\>,"name":\<name\>,"rank":\<rank\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>}`,
     {.......},
     .........
     ]`
   ,
-    "removed-places":`[
-    `{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}}`,
+  
+    "removed-place-ids":`[\<removed-place-ids\>]`,
+	
+    "added-places":`[
+    `{"googleId":\<google-id\>,"name":\<name\>,"rank":\<rank\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>}`,
     {.......},
     .........
   ]`,
-    "added-places":`[
-    `{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}}`,
-    {.......},
-    .........
-  ]`
+  
+  "destination":\<destination\>
+  
+  "do-refresh":<true\\false\>
 
 }`
 
@@ -304,7 +314,7 @@
 
   * **Code:** 200 <br />
     **Content:** `{"result":[
-		{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\,"TimeTakenToNextPlace":\<time-taken\>,
+		{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\,"TimeTakenToNextPlace":\<time-taken\>,"rank":\<rank\>,
 		"time-to-spent":{"hours":\<hours\>,"minutes":\<minutes\>}},
 		{....},
 		....
@@ -325,11 +335,13 @@
     `{"googleId":"ChIJHdPykcEVrjsRIr4v35kLEY4","name":"\"Lalbagh Botanical Garden\"","rating":4.4,"location":{"lat":"12.9507432","lng":"77.5847773"}}`
     ]`
   ,
-    "removed-places":`[
-    `{"googleId":"ChIJqZQybIEWrjsRezNLL4Ju2Gk","name":"\"National Gallery of Modern Art\"","rating":4.4,"location":{"lat":"12.989747","lng":"77.58815"}}`,
-    `{"googleId":"ChIJVQ947HgWrjsRty7bPqHZG48","name":"\"St. Marks Cathedral\"","rating":4.5,"location":{"lat":"12.9760281","lng":"77.60028989999999"}}`,
-    `{"googleId":"ChIJBw42C-09rjsRs7KmQUqyf3o","name":"\"ISKCON Bangalore\"","rating":4.5,"location":{"lat":"13.0096323","lng":"77.55107099999999"}}`
-  ]`,
+    "removed-place-ids":`["ChIJqZQybIEWrjsRezNLL4Ju2Gk","ChIJVQ947HgWrjsRty7bPqHZG48","ChIJBw42C-09rjsRs7KmQUqyf3o","ChIJRzdYfjQ4rjsRc9kA7UZXzZk","ChIJlTBafjoUrjsRc99a3-6HCY4",
+    "ChIJQWihIyoXrjsR-L_b7ztSjpY","ChIJ3RcPFRkUrjsRVJHcR7hCUUM"]`,
+    
+  "destination":"bangalore",
+  
+  "do-refresh":`true`
+  
     "added-places":`[
     `{"googleId":"","name":"Bannerghatta Biological Park","rating":4.1,"location":{"lat":12.8003592,"lng":77.57760979999999}}`
   ]`
@@ -387,61 +399,4 @@
 			"ChIJ8VNf1mMWrjsRwsMEl564ksQ"]`,
 	"destination":"bangalore"
 }`
-
-**9. Update the Time to Spent At Each Destination API**
-----
-  _The API is used to alter the time to spent at each location in a route.
-  This API can alter the suggested route if there is significant changes in time to spent._
-  
-
-* **URL**
-
-  /rest/modifyroute/timetospent
-
-* **Method:**
-  
-  `POST`
-
-
-* **Data Params**
-
-  `{
-  "selected-places":
-    `[`{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>}`,
-	`{...}`,`{...}`]`
-	"removed-place-ids":`[\<google-id-list\>]`,
-	"destination":\<destination\>
-	}`
-  `
-	
-
-* **Success Response:**
-  
-
-  * **Code:** 200 <br />
-    **Content:** `{"result":[{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\>,
-	"TimeTakenToNextPlace":\<time-taken-to-next-place\>,"time-to-spent":{"hours":\<hours\>,"minutes":\<minutes\>}}`,{...},{...}]}`
-
-* **Sample Call:**
-
-	URL : /rest/modifyroute/timetospent
-	
-	Method : POST
-	
-	Content-Type : application/json
-	
-	Request Body:
-	
-`{
-  "selected-places":
-    [{"googleId":"ChIJsW0ZC-BprjsRXzqh_3gub08","name":"Bannerghatta Biological Park","rating":4.1,"location":{"lat":12.8003592,"lng":"77.57760979999999"},"time-to-spent":"4:00:00:00"},
-	{"googleId":"ChIJN1ZKKUkWrjsRzxIVM363-LE","name":"\"Bengaluru Palace\"","rating":4.1,"location":{"lat":"12.9986964","lng":"77.59202599999999"},"time-to-spent":"1:30:00:00"},
-	{"googleId":"ChIJk0gN-2sWrjsRljNKfECgL9M","name":"\"Jawaharlal Nehru Planetarium\"","rating":4.2,"location":{"lat":"12.984865","lng":"77.5895718"},"time-to-spent":"2:00:00:00"},
-	{"googleId":"ChIJHdPykcEVrjsRIr4v35kLEY4","name":"\"Lalbagh Botanical Garden\"","rating":4.4,"location":{"lat":"12.9507432","lng":"77.5847773"},"time-to-spent":"2:00:00:00"},
-	{"googleId":"ChIJL2fQ53MWrjsRuN9D6aalLMY","name":"\"Cubbon Park\"","rating":4.4,"location":{"lat":"12.9763472","lng":"77.59292839999999"},"time-to-spent":"2:00:00:00"}]
-	,
-	"destination":"bangalore",
-	"removed-place-ids":["ChIJqZQybIEWrjsRezNLL4Ju2Gk","ChIJVQ947HgWrjsRty7bPqHZG48","ChIJBw42C-09rjsRs7KmQUqyf3o"]
-	}`
-
 

@@ -5,6 +5,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
+import com.trippal.places.apis.planner.comparators.RatingComparator;
 import com.trippal.utils.TPUtil;
 
 @Path("/nearbysearch")
@@ -29,7 +30,7 @@ public class NearByPlacesAPIRest {
 	@GET
 	@Path("/tourist-places")
 	public String getSuggestedTouristPlaces(@QueryParam(value = "destination") String destination) throws Exception {
-		JsonObject jsonObject = TPUtil.getSuggestedTouristPlaces(destination);
+		JsonObject jsonObject = TPUtil.getSuggestedTouristPlaces(destination, new RatingComparator());
 		return jsonObject.toString();
 	}
 	

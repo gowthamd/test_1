@@ -19,16 +19,15 @@ import javax.json.JsonObjectBuilder;
 
 import com.trippal.constants.PlaceConstants;
 import com.trippal.constants.TPConstants;
-import com.trippaldal.dal.places.GooglePlacesDao;
-import com.trippaldal.dal.places.GooglePlacesDaoImpl;
-import com.trippal.places.apis.distance.service.DistanceFinderAPI;
+import com.trippal.places.apis.planner.comparators.RatingComparator;
 import com.trippal.places.apis.planner.modifyroute.AddDayToRouteRequest;
 import com.trippal.places.apis.planner.modifyroute.ModifyRouteRequest;
-import com.trippal.places.apis.planner.modifyroute.UpdateTimeToSpentRequest;
 import com.trippal.places.planner.DayPlanner;
 import com.trippal.places.planner.Location;
 import com.trippal.places.planner.Place;
 import com.trippal.places.planner.Route;
+import com.trippaldal.dal.places.GooglePlacesDao;
+import com.trippaldal.dal.places.GooglePlacesDaoImpl;
 
 public class TPUtil {
 	
@@ -69,10 +68,10 @@ public class TPUtil {
 		return convertToPlacesJsonArray(googleResponse,false,"nearbyplaces");
 	}
 
-	public static JsonObject getSuggestedTouristPlaces(String destination) throws Exception {
+	public static JsonObject getSuggestedTouristPlaces(String destination, Comparator<Place> comparator) throws Exception {
 		Map<String, JsonObject> idToJson = new HashMap<String, JsonObject>();
 		List<Place> placeList = getTouristPlacesByName(destination, idToJson);
-		return getSuggestedRoute(placeList);
+		return getSuggestedRoute(placeList, comparator);
 		
 	}
 	
@@ -90,47 +89,49 @@ public class TPUtil {
 				placeIter.remove();
 			}
 		}
-		return getSuggestedRoute(placeList);
+		return getSuggestedRoute(placeList, new RatingComparator());
 	}
 	
 	public static JsonObject getModifiedRoute(ModifyRouteRequest modifyRequest) throws Exception{
-		List<Place> placeList = modifyRequest.getRetainedPlaces();
-		if(modifyRequest.getAddedPlaces().size() == 0){
-			return getSuggestedRoute(placeList);
+		List<Place> retainedList = modifyRequest.getRetainedPlaces();
+		if(modifyRequest.getAddedPlaces() != null){
+			retainedList.addAll(modifyRequest.getAddedPlaces());
 		}
-		placeList.addAll(modifyRequest.getAddedPlaces());
-		return getSuggestedRoute(placeList);		
-	}
-	
-	public static JsonObject getModifiedRoute(UpdateTimeToSpentRequest updateTimeToSpentRequest) throws Exception{
-		List<Place> selectedList = updateTimeToSpentRequest.getSelectedPlaces();
+		if(!modifyRequest.isRefreshList()){
+			return getSuggestedRoute(retainedList, new RatingComparator());
+		}
 		Map<String, Place> idToPlace = new HashMap<String, Place>();
-		for(Place place : selectedList){
+		int nextRank = 0;
+		for(Place place : retainedList){
 			idToPlace.put(place.getGoogleId(), place);
+			nextRank = place.getRank() >= nextRank ? nextRank = place.getRank()+1:nextRank;
 		}
-		for(String id : updateTimeToSpentRequest.getRemovedPlacesList()){
+		for(String id : modifyRequest.getRemovedPlaceIds()){
 			idToPlace.put(id, null);
 		}
-		List<Place> placeList = updateTimeToSpentRequest.getAllPlaceList();
+		List<Place> placeList = modifyRequest.getAllPlaceList();
 		if(null == placeList || placeList.size() == 0){
-			placeList = getTouristPlacesByName(updateTimeToSpentRequest.getDestination(), new HashMap<String, JsonObject>());
+			placeList = getTouristPlacesByName(modifyRequest.getDestination(), new HashMap<String, JsonObject>());
 		}
 		Iterator<Place> placeIter = placeList.iterator();
 		while(placeIter.hasNext()){
 			Place place = placeIter.next();
 			if(idToPlace.containsKey(place.getGoogleId())){
 				placeIter.remove();
+				continue;
 			}
+			place.setRank(nextRank++);
 		}
-		placeList.addAll(selectedList);
-		return getSuggestedRoute(placeList);		
+		placeList.addAll(retainedList);
+		return getSuggestedRoute(placeList, new RatingComparator());		
 	}
 	
-	private static JsonObject getSuggestedRoute(List<Place> placeList) throws Exception{
+	
+	private static JsonObject getSuggestedRoute(List<Place> placeList, Comparator<Place> comparator) throws Exception{
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 		DayPlanner planner = new DayPlanner();
-		Route route = planner.planItenary(new Place(),placeList);
+		Route route = planner.planItenary(new Place(),placeList, comparator);
 
 		JsonObjectBuilder inputObjectBuilder = Json.createObjectBuilder();
 		int i=0;
@@ -142,6 +143,7 @@ public class TPUtil {
 			inputObjectBuilder.add("latitute", place.getLocation().getLatitude());
 			inputObjectBuilder.add("longitude", place.getLocation().getLongtitude());
 			inputObjectBuilder.add("TimeTakenToNextPlace", route.getTimeTaken(i++));
+			inputObjectBuilder.add("rank", i);
 			JsonObjectBuilder timeToSpentJson = Json.createObjectBuilder();
 			String[] timeToSpent = place.getTimeToSpent().split(":");
 			timeToSpentJson.add("hours", timeToSpent[0]);

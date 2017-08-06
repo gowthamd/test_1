@@ -12,19 +12,34 @@ public class ModifyRouteRequest {
 	
 	@XmlElement(name="added-places")
 	List<Place> addedPlaces;
-	@XmlElement(name="removed-places")
-	List<Place> removedPlaces;
+	@XmlElement(name="removed-place-ids")
+	List<String> removedPlaceIds;
 	@XmlElement(name="retained-places")
 	List<Place> retainedPlaces;
+	@XmlElement(name="do-refresh")
+	boolean refreshList;
+	@XmlElement(name="all-places")
+	List<Place> allPlaceList;
+	@XmlElement(name="destination")
+	String destination;
+	
 	public List<Place> getAddedPlaces() {
 		return addedPlaces;
 	}
-	public List<Place> getRemovedPlaces() {
-		return removedPlaces;
+	public List<String> getRemovedPlaceIds() {
+		return removedPlaceIds;
 	}
 	public List<Place> getRetainedPlaces() {
 		return retainedPlaces;
 	}
-	
+	public boolean isRefreshList() {
+		return refreshList;
+	}
+	public List<Place> getAllPlaceList() {
+		return allPlaceList;
+	}
+	public String getDestination() {
+		return destination;
+	}
 
 }

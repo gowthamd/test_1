@@ -6,15 +6,10 @@ import java.util.Comparator;
 import java.util.List;
 
 public class DayPlanner {
-	public Route planItenary(Place startPlace, List<Place> places) throws Exception {
+	public Route planItenary(Place startPlace, List<Place> places, Comparator<Place> comparator) throws Exception {
 
 		// sort place based on ranking
-		Collections.sort(places, new Comparator<Place>() {
-			@Override
-			public int compare(Place o1, Place o2) {
-				return (int) ((o2.getRating() * 10) - (o1.getRating() * 10));
-			}
-		});
+		Collections.sort(places, comparator);
 
 		// taking top 10 rating places from the places list and using for
 		// calculating ideal route
