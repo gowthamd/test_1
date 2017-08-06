@@ -12,13 +12,30 @@ public class UpdateTimeToSpentRequest {
 
 	@XmlElement(name="selected-places")
 	List<Place> selectedPlaces;
+	
+	@XmlElement(name="destination")
+	String destination;
+	
+	@XmlElement(name="all-places")
+	List<Place> allPlaceList;
+	
+	@XmlElement(name="removed-places")
+	List<Place> removedPlaces;
 
 	public List<Place> getSelectedPlaces() {
 		return selectedPlaces;
 	}
 
-	public void setSelectedPlaces(List<Place> selectedPlaces) {
-		this.selectedPlaces = selectedPlaces;
-	}	
-	
+	public String getDestination() {
+		return destination;
+	}
+
+	public List<Place> getAllPlaceList() {
+		return allPlaceList;
+	}
+
+	public List<Place> getRemovedPlaces() {
+		return removedPlaces;
+	}
+		
 }

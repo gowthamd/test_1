@@ -103,7 +103,26 @@ public class TPUtil {
 	}
 	
 	public static JsonObject getModifiedRoute(UpdateTimeToSpentRequest updateTimeToSpentRequest) throws Exception{
-		List<Place> placeList = updateTimeToSpentRequest.getSelectedPlaces();
+		List<Place> selectedList = updateTimeToSpentRequest.getSelectedPlaces();
+		Map<String, Place> idToPlace = new HashMap<String, Place>();
+		for(Place place : selectedList){
+			idToPlace.put(place.getGoogleId(), place);
+		}
+		for(Place place : updateTimeToSpentRequest.getRemovedPlaces()){
+			idToPlace.put(place.getGoogleId(), place);
+		}
+		List<Place> placeList = updateTimeToSpentRequest.getAllPlaceList();
+		if(null == placeList || placeList.size() == 0){
+			placeList = getTouristPlacesByName(updateTimeToSpentRequest.getDestination(), new HashMap<String, JsonObject>());
+		}
+		Iterator<Place> placeIter = placeList.iterator();
+		while(placeIter.hasNext()){
+			Place place = placeIter.next();
+			if(idToPlace.containsKey(place.getGoogleId())){
+				placeIter.remove();
+			}
+		}
+		placeList.addAll(selectedList);
 		return getSuggestedRoute(placeList);		
 	}
 	
