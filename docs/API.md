@@ -408,7 +408,14 @@
   `{
   "selected-places":
     `[`{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>}`,
-	`{...}`,`{...}`]`}`
+	`{...}`,`{...}`]`
+	"removed-places":`[
+    `{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}}`,
+    {.......},
+    .........
+	]`,
+	"destination":\<destination\>
+	}`
   `
 	
 
@@ -436,6 +443,13 @@
 	{"googleId":"ChIJk0gN-2sWrjsRljNKfECgL9M","name":"\"Jawaharlal Nehru Planetarium\"","rating":4.2,"location":{"lat":"12.984865","lng":"77.5895718"},"time-to-spent":"2:00:00:00"},
 	{"googleId":"ChIJHdPykcEVrjsRIr4v35kLEY4","name":"\"Lalbagh Botanical Garden\"","rating":4.4,"location":{"lat":"12.9507432","lng":"77.5847773"},"time-to-spent":"2:00:00:00"},
 	{"googleId":"ChIJL2fQ53MWrjsRuN9D6aalLMY","name":"\"Cubbon Park\"","rating":4.4,"location":{"lat":"12.9763472","lng":"77.59292839999999"},"time-to-spent":"2:00:00:00"}]`
+	,
+	"destination":"bangalore",
+	"removed-places":`[
+	    {"googleId":"ChIJqZQybIEWrjsRezNLL4Ju2Gk","name":"\"National Gallery of Modern Art\"","rating":4.4,"location":{"lat":"12.989747","lng":"77.58815"}},
+	    {"googleId":"ChIJVQ947HgWrjsRty7bPqHZG48","name":"\"St. Marks Cathedral\"","rating":4.5,"location":{"lat":"12.9760281","lng":"77.60028989999999"}},
+	    {"googleId":"ChIJBw42C-09rjsRs7KmQUqyf3o","name":"\"ISKCON Bangalore\"","rating":4.5,"location":{"lat":"13.0096323","lng":"77.55107099999999"}}
+	  ]`
 	}`
 
 
