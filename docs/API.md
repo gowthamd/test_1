@@ -24,7 +24,7 @@
   
   **Content:** 
   
-  {"destinations":
+  `{"destinations":
 	[{"cities":
 		[
 			{
@@ -39,7 +39,7 @@
 	},
 	{"states":[..........]}
 	{"countries":[..........]}
-  }
+  }`
  
 * **Error Response:**
 
@@ -74,7 +74,7 @@
   
     **Content:** 
 	
-	{"nearbyplaces":[
+	`{"nearbyplaces":[
 		{\<Name of Destination\>:
 			{"location":
 				{"lat":\<latitude\>,"lng":\<longitude\>},
@@ -84,7 +84,7 @@
 			}
 		},{...},
 		]
-	}
+	}`
  
 * **Error Response:**
 
@@ -121,7 +121,7 @@
   
     **Content:** 
 	
-	{"nearbyplaces":[
+	`{"nearbyplaces":[
 		{\<Name of Destination\>:
 			{"location":
 				{"lat":\<latitude\>,"lng":\<longitude\>},
@@ -131,7 +131,7 @@
 			}
 		},{...},
 		]
-	}
+	}`
  
 * **Error Response:**
 
@@ -164,7 +164,7 @@
   
     **Content:** 
 	
-	`{"result":`[
+	`{"result":[
 		{
 			"googleId":\<google-id\>,
 			"name":\<name\>,
@@ -174,7 +174,7 @@
 			"TimeTakenToNextPlace":\<time-taken-to-next-place\>,
 			"time-to-spent":{"hours":\<hours\>,"minutes":\<minutes\>}
 		},{...},{...}
-	]`}`
+	]}`
  
 * **Error Response:**
 
@@ -209,7 +209,7 @@
   
     **Content:** 
 	
-	{"distance":\<distance\>,"duration":\<duration\>}
+	`{"distance":\<distance\>,"duration":\<duration\>}`
  
 * **Error Response:**
 
@@ -241,7 +241,7 @@
   
     **Content:** 
 	
-	{"tourist-places":[
+	`{"tourist-places":[
 		{"geometry":{
 			"location":{"lat":12.961937,"lng":77.63484699999999},
 			"viewport":{
@@ -255,7 +255,7 @@
 		{....},
 		.....
 		]
-	}
+	}`
  
 * **Error Response:**
 
@@ -387,9 +387,10 @@
 			"ChIJ8VNf1mMWrjsRwsMEl564ksQ"]`,
 	"destination":"bangalore"
 }`
-**8. Update the Time to Spent At Each Destination API **
+**9. Update the Time to Spent At Each Destination API **
 ----
-  _The API is used to alter the time to spent at each location in a route._
+  _The API is used to alter the time to spent at each location in a route.
+  This API can alter the suggested route if there is significant changes in time to spent._
   
 
 * **URL**
@@ -414,8 +415,8 @@
   
 
   * **Code:** 200 <br />
-    **Content:** `{"result":`[{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\>,
-	"TimeTakenToNextPlace":\<time-taken-to-next-place\>,"time-to-spent":{"hours":\<hours\>,"minutes":\<minutes\>}}`,{...},{...}]`}`
+    **Content:** `{"result":[{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\>,
+	"TimeTakenToNextPlace":\<time-taken-to-next-place\>,"time-to-spent":{"hours":\<hours\>,"minutes":\<minutes\>}}`,{...},{...}]}`
 
 * **Sample Call:**
 
@@ -423,13 +424,14 @@
 	Method : POST
 	Content-Type : application/json
 	Request Body:
+	
 `{
   "selected-places":
-    `[{"googleId":"ChIJsW0ZC-BprjsRXzqh_3gub08","name":"Bannerghatta Biological Park","rating":4.1,"location":{"lat":12.8003592,"lng":"77.57760979999999"},"time-to-spent":"4:00:00:00"},
+    [{"googleId":"ChIJsW0ZC-BprjsRXzqh_3gub08","name":"Bannerghatta Biological Park","rating":4.1,"location":{"lat":12.8003592,"lng":"77.57760979999999"},"time-to-spent":"4:00:00:00"},
 	{"googleId":"ChIJN1ZKKUkWrjsRzxIVM363-LE","name":"\"Bengaluru Palace\"","rating":4.1,"location":{"lat":"12.9986964","lng":"77.59202599999999"},"time-to-spent":"1:30:00:00"},
 	{"googleId":"ChIJk0gN-2sWrjsRljNKfECgL9M","name":"\"Jawaharlal Nehru Planetarium\"","rating":4.2,"location":{"lat":"12.984865","lng":"77.5895718"},"time-to-spent":"2:00:00:00"},
 	{"googleId":"ChIJHdPykcEVrjsRIr4v35kLEY4","name":"\"Lalbagh Botanical Garden\"","rating":4.4,"location":{"lat":"12.9507432","lng":"77.5847773"},"time-to-spent":"2:00:00:00"},
-	{"googleId":"ChIJL2fQ53MWrjsRuN9D6aalLMY","name":"\"Cubbon Park\"","rating":4.4,"location":{"lat":"12.9763472","lng":"77.59292839999999"},"time-to-spent":"2:00:00:00"}]`
+	{"googleId":"ChIJL2fQ53MWrjsRuN9D6aalLMY","name":"\"Cubbon Park\"","rating":4.4,"location":{"lat":"12.9763472","lng":"77.59292839999999"},"time-to-spent":"2:00:00:00"}]
 	}`
 
 
