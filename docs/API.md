@@ -299,13 +299,13 @@
 	
     "added-places":`[
     `{"googleId":\<google-id\>,"name":\<name\>,"rank":\<rank\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>}`,
-    {.......},
-    .........
+    `{.......}`,
+    `{.......}`
   ]`,
   
   "destination":\<destination\>
   
-  "do-refresh":<true\\false\>
+  "do-refresh":\<true\\false\>
 
 }`
 
