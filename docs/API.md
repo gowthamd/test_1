@@ -289,23 +289,23 @@
   `{
   "retained-places":
     `[
-    `{"googleId":\<google-id\>,"name":\<name\>,"rank":\<rank\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>}`,
+    {"googleId":\<google-id\>,"name":\<name\>,"rank":\<rank\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>},
     {.......},
-    .........
+    {.......}
     ]`
   ,
   
     "removed-place-ids":`[\<removed-place-ids\>]`,
 	
     "added-places":`[
-    `{"googleId":\<google-id\>,"name":\<name\>,"rank":\<rank\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>}`,
-    `{.......}`,
-    `{.......}`
+    {"googleId":\<google-id\>,"name":\<name\>,"rank":\<rank\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>},
+    {.......},
+    {.......}
   ]`,
   
-	"destination":\<destination\>,
+		"destination":\<destination\>,
   
-	"do-refresh":\<true\\false\>
+		"do-refresh":\<true\\false\>
 
 }`
 
@@ -330,10 +330,10 @@
 `{
   "retained-places":
     `[
-    `{"googleId":"ChIJN1ZKKUkWrjsRzxIVM363-LE","name":"\"Bengaluru Palace\"","rating":4.1,"location":{"lat":"12.9986964","lng":"77.59202599999999"}}`,
-    `{"googleId":"ChIJk0gN-2sWrjsRljNKfECgL9M","name":"\"Jawaharlal Nehru Planetarium\"","rating":4.2,"location":{"lat":"12.984865","lng":"77.5895718"}}`,
-    `{"googleId":"ChIJL2fQ53MWrjsRuN9D6aalLMY","name":"\"Cubbon Park\"","rating":4.4,"location":{"lat":"12.9763472","lng":"77.59292839999999"}}`,
-    `{"googleId":"ChIJHdPykcEVrjsRIr4v35kLEY4","name":"\"Lalbagh Botanical Garden\"","rating":4.4,"location":{"lat":"12.9507432","lng":"77.5847773"}}`
+    {"googleId":"ChIJN1ZKKUkWrjsRzxIVM363-LE","name":"\"Bengaluru Palace\"","rating":4.1,"location":{"lat":"12.9986964","lng":"77.59202599999999"}},
+    {"googleId":"ChIJk0gN-2sWrjsRljNKfECgL9M","name":"\"Jawaharlal Nehru Planetarium\"","rating":4.2,"location":{"lat":"12.984865","lng":"77.5895718"}},
+    {"googleId":"ChIJL2fQ53MWrjsRuN9D6aalLMY","name":"\"Cubbon Park\"","rating":4.4,"location":{"lat":"12.9763472","lng":"77.59292839999999"}},
+    {"googleId":"ChIJHdPykcEVrjsRIr4v35kLEY4","name":"\"Lalbagh Botanical Garden\"","rating":4.4,"location":{"lat":"12.9507432","lng":"77.5847773"}}
     ]`
   ,
     "removed-place-ids":`["ChIJqZQybIEWrjsRezNLL4Ju2Gk","ChIJVQ947HgWrjsRty7bPqHZG48","ChIJBw42C-09rjsRs7KmQUqyf3o","ChIJRzdYfjQ4rjsRc9kA7UZXzZk","ChIJlTBafjoUrjsRc99a3-6HCY4",
@@ -341,10 +341,10 @@
     
   "destination":"bangalore",
   
-  "do-refresh":`true`
+  "do-refresh":`true`,
   
     "added-places":`[
-    `{"googleId":"","name":"Bannerghatta Biological Park","rating":4.1,"location":{"lat":12.8003592,"lng":77.57760979999999}}`
+    {"googleId":"","name":"Bannerghatta Biological Park","rating":4.1,"location":{"lat":12.8003592,"lng":77.57760979999999}}
   ]`
 
 }`
