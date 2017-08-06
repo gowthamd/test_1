@@ -387,6 +387,7 @@
 			"ChIJ8VNf1mMWrjsRwsMEl564ksQ"]`,
 	"destination":"bangalore"
 }`
+
 **9. Update the Time to Spent At Each Destination API **
 ----
   _The API is used to alter the time to spent at each location in a route.
@@ -421,8 +422,11 @@
 * **Sample Call:**
 
 	URL : /rest/modifyroute/timetospent
+	
 	Method : POST
+	
 	Content-Type : application/json
+	
 	Request Body:
 	
 `{
