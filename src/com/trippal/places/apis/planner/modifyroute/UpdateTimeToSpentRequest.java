@@ -19,8 +19,8 @@ public class UpdateTimeToSpentRequest {
 	@XmlElement(name="all-places")
 	List<Place> allPlaceList;
 	
-	@XmlElement(name="removed-places")
-	List<Place> removedPlaces;
+	@XmlElement(name="removed-place-ids")
+	List<String> removedPlacesList;
 
 	public List<Place> getSelectedPlaces() {
 		return selectedPlaces;
@@ -34,8 +34,8 @@ public class UpdateTimeToSpentRequest {
 		return allPlaceList;
 	}
 
-	public List<Place> getRemovedPlaces() {
-		return removedPlaces;
+	public List<String> getRemovedPlacesList() {
+		return removedPlacesList;
 	}
 		
 }

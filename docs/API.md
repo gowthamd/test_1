@@ -24,7 +24,7 @@
   
   **Content:** 
   
-  {"destinations":
+  `{"destinations":
 	[{"cities":
 		[
 			{
@@ -39,7 +39,7 @@
 	},
 	{"states":[..........]}
 	{"countries":[..........]}
-  }
+  }`
  
 * **Error Response:**
 
@@ -74,7 +74,7 @@
   
     **Content:** 
 	
-	{"nearbyplaces":[
+	`{"nearbyplaces":[
 		{\<Name of Destination\>:
 			{"location":
 				{"lat":\<latitude\>,"lng":\<longitude\>},
@@ -84,7 +84,7 @@
 			}
 		},{...},
 		]
-	}
+	}`
  
 * **Error Response:**
 
@@ -121,7 +121,7 @@
   
     **Content:** 
 	
-	{"nearbyplaces":[
+	`{"nearbyplaces":[
 		{\<Name of Destination\>:
 			{"location":
 				{"lat":\<latitude\>,"lng":\<longitude\>},
@@ -131,7 +131,7 @@
 			}
 		},{...},
 		]
-	}
+	}`
  
 * **Error Response:**
 
@@ -140,7 +140,7 @@
 
   /rest/nearbysearch/prominence?place-id=ChIJgWsCh7C4VTcRwgRZ3btjpY8&radius=50000
   
-** 4. Suggested Places API**
+**4. Suggested Places API**
 ----
   API to get the optimal places to visit on a single day and the best route to take to cover these places.
 
@@ -164,16 +164,17 @@
   
     **Content:** 
 	
-	{"result":[
+	`{"result":[
 		{
-			"googleId":"ChIJ95mdmvyHBDkRDGfx0kRrtXg",
-			"name":"\"Tourist Hotel\"",
-			"rating":4.0,
-			"latitute":"32.2481058",
-			"longitude":"77.1854331",
-			"TimeTakenToNextPlace":"00:47:00.000"
-		},{...},...
-	]}
+			"googleId":\<google-id\>,
+			"name":\<name\>,
+			"rating":\<rating\>,
+			"latitute":\<latitude\>,
+			"longitude":\<longitude\>,
+			"TimeTakenToNextPlace":\<time-taken-to-next-place\>,
+			"time-to-spent":{"hours":\<hours\>,"minutes":\<minutes\>}
+		},{...},{...}
+	]}`
  
 * **Error Response:**
 
@@ -208,7 +209,7 @@
   
     **Content:** 
 	
-	{"distance":\<distance\>,"duration":\<duration\>}
+	`{"distance":\<distance\>,"duration":\<duration\>}`
  
 * **Error Response:**
 
@@ -240,7 +241,7 @@
   
     **Content:** 
 	
-	{"tourist-places":[
+	`{"tourist-places":[
 		{"geometry":{
 			"location":{"lat":12.961937,"lng":77.63484699999999},
 			"viewport":{
@@ -254,7 +255,7 @@
 		{....},
 		.....
 		]
-	}
+	}`
  
 * **Error Response:**
 
@@ -264,7 +265,7 @@
 	
 **7. Add/Remove Places API from the Suggested Route API Response**
 ----
-  <_The API is used to add or remove a place in the suggested route._>
+  _The API is used to add or remove a place in the suggested route._
 
 * **URL**
 
@@ -279,22 +280,22 @@
 
   `{
   "retained-places":
-    [
-    {"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}},
+    `[
+    `{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}}`,
     {.......},
     .........
-    ]
+    ]`
   ,
-    "removed-places":[
-    {"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}},
+    "removed-places":`[
+    `{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}}`,
     {.......},
     .........
-  ],
-    "added-places":[
-    {"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}},
+  ]`,
+    "added-places":`[
+    `{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>}}`,
     {.......},
     .........
-  ]
+  ]`
 
 }`
 
@@ -303,7 +304,8 @@
 
   * **Code:** 200 <br />
     **Content:** `{"result":[
-		{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\,"TimeTakenToNextPlace":\<time-taken\},
+		{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\,"TimeTakenToNextPlace":\<time-taken\>,
+		"time-to-spent":{"hours":\<hours\>,"minutes":\<minutes\>}},
 		{....},
 		....
 		]}`
@@ -333,3 +335,113 @@
   ]`
 
 }`
+
+**8. Add another day to the suggested Places API**
+----
+  _The API is used to add another day to the suggested route.
+  If the UI is having the all places details, that can be provided to speed up the response._
+  
+
+* **URL**
+
+  /rest/modifyroute/nextday
+
+* **Method:**
+  
+  `PUT`
+
+
+* **Data Params**
+
+  `{
+  "selected-place-ids":    `[\<google-id-list\>]`,
+  "destination" : \<destination\>,
+  "all-places"	: `[\<all-places-list\>]`
+}`
+	
+	**_The all-places param can be used to provide all the places in the destination. This will make server to avoid querying for the places_**
+
+* **Success Response:**
+  
+
+  * **Code:** 200 <br />
+    **Content:** `{"result":[
+		{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\,"TimeTakenToNextPlace":\<time-taken\>,"time-to-spent":{"hours":\<hours\>,"minutes":\<minutes\>}},
+		{....},
+		....
+		]}`
+
+* **Sample Call:**
+
+	URL : /rest/modifyroute/nextday
+	Method : PUT
+	Content-Type : application/json
+	Request Body:
+`{
+	"selected-place-ids":`["ChIJN1ZKKUkWrjsRzxIVM363-LE",
+			"ChIJk0gN-2sWrjsRljNKfECgL9M",
+			"ChIJL2fQ53MWrjsRuN9D6aalLMY",
+			"ChIJHdPykcEVrjsRIr4v35kLEY4",
+			"ChIJqZQybIEWrjsRezNLL4Ju2Gk",
+			"ChIJVQ947HgWrjsRty7bPqHZG48",
+			"ChIJ8VNf1mMWrjsRwsMEl564ksQ"]`,
+	"destination":"bangalore"
+}`
+
+**9. Update the Time to Spent At Each Destination API**
+----
+  _The API is used to alter the time to spent at each location in a route.
+  This API can alter the suggested route if there is significant changes in time to spent._
+  
+
+* **URL**
+
+  /rest/modifyroute/timetospent
+
+* **Method:**
+  
+  `POST`
+
+
+* **Data Params**
+
+  `{
+  "selected-places":
+    `[`{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>}`,
+	`{...}`,`{...}`]`
+	"removed-place-ids":`[\<google-id-list\>]`,
+	"destination":\<destination\>
+	}`
+  `
+	
+
+* **Success Response:**
+  
+
+  * **Code:** 200 <br />
+    **Content:** `{"result":[{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\>,
+	"TimeTakenToNextPlace":\<time-taken-to-next-place\>,"time-to-spent":{"hours":\<hours\>,"minutes":\<minutes\>}}`,{...},{...}]}`
+
+* **Sample Call:**
+
+	URL : /rest/modifyroute/timetospent
+	
+	Method : POST
+	
+	Content-Type : application/json
+	
+	Request Body:
+	
+`{
+  "selected-places":
+    [{"googleId":"ChIJsW0ZC-BprjsRXzqh_3gub08","name":"Bannerghatta Biological Park","rating":4.1,"location":{"lat":12.8003592,"lng":"77.57760979999999"},"time-to-spent":"4:00:00:00"},
+	{"googleId":"ChIJN1ZKKUkWrjsRzxIVM363-LE","name":"\"Bengaluru Palace\"","rating":4.1,"location":{"lat":"12.9986964","lng":"77.59202599999999"},"time-to-spent":"1:30:00:00"},
+	{"googleId":"ChIJk0gN-2sWrjsRljNKfECgL9M","name":"\"Jawaharlal Nehru Planetarium\"","rating":4.2,"location":{"lat":"12.984865","lng":"77.5895718"},"time-to-spent":"2:00:00:00"},
+	{"googleId":"ChIJHdPykcEVrjsRIr4v35kLEY4","name":"\"Lalbagh Botanical Garden\"","rating":4.4,"location":{"lat":"12.9507432","lng":"77.5847773"},"time-to-spent":"2:00:00:00"},
+	{"googleId":"ChIJL2fQ53MWrjsRuN9D6aalLMY","name":"\"Cubbon Park\"","rating":4.4,"location":{"lat":"12.9763472","lng":"77.59292839999999"},"time-to-spent":"2:00:00:00"}]
+	,
+	"destination":"bangalore",
+	"removed-place-ids":["ChIJqZQybIEWrjsRezNLL4Ju2Gk","ChIJVQ947HgWrjsRty7bPqHZG48","ChIJBw42C-09rjsRs7KmQUqyf3o"]
+	}`
+
+

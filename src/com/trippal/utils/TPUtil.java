@@ -108,8 +108,8 @@ public class TPUtil {
 		for(Place place : selectedList){
 			idToPlace.put(place.getGoogleId(), place);
 		}
-		for(Place place : updateTimeToSpentRequest.getRemovedPlaces()){
-			idToPlace.put(place.getGoogleId(), place);
+		for(String id : updateTimeToSpentRequest.getRemovedPlacesList()){
+			idToPlace.put(id, null);
 		}
 		List<Place> placeList = updateTimeToSpentRequest.getAllPlaceList();
 		if(null == placeList || placeList.size() == 0){
