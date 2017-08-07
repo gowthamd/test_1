@@ -16,8 +16,8 @@ public class ModifyRouteRequest {
 	List<String> removedPlaceIds;
 	@XmlElement(name="retained-places")
 	List<Place> retainedPlaces;
-	@XmlElement(name="do-refresh")
-	boolean refreshList;
+	@XmlElement(name="re-run-algo")
+	Boolean reRunAlgo;
 	@XmlElement(name="all-places")
 	List<Place> allPlaceList;
 	@XmlElement(name="destination")
@@ -32,8 +32,8 @@ public class ModifyRouteRequest {
 	public List<Place> getRetainedPlaces() {
 		return retainedPlaces;
 	}
-	public boolean isRefreshList() {
-		return refreshList;
+	public boolean needRerunAlgo() {
+		return Boolean.TRUE.equals(reRunAlgo);
 	}
 	public List<Place> getAllPlaceList() {
 		return allPlaceList;

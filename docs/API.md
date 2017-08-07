@@ -5,7 +5,7 @@
 
   /rest/autocomplete/places?str=\<text\>&region=\<region-type\>
 
-* **Method:**
+* **Method**
   
    `GET`
   
@@ -20,9 +20,9 @@
 
 * **Success Response:**
 
-  * **Code:** 200 
+  * **Code** 200 
   
-  **Content:** 
+  **Content** 
   
   `{"destinations":
 	[{"cities":
@@ -272,8 +272,8 @@
 ----
   _The API is used to add or remove a place in the suggested route.
   The time to spent at each location can also be altered.
-  This API can lead to changes in the suggested route as editing or adding/removing will re run the route algorithm
-  If there is only changes in the order of visit of places, the refresh key need to be set to false to avoid re running the algorithm_
+  This API can lead to changes in the order of the destinations in the suggested route.
+  If all the places in the destination need to be included in the algorithm set re-run-algo flag to true_
 
 * **URL**
 
@@ -293,16 +293,17 @@
     {.......}
     ]`
   ,
-  
-    "removed-place-ids":`[\<removed-place-ids\>]`,
 	
     "added-places":`[{"googleId":\<google-id\>,"name":\<name\>,"rank":\<rank\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>},
     {.......},
-    {.......}]`,
+    {.......}]`,		
+		
   
-		"destination":\<destination\>,
+	\"removed-place-ids\":`[\<removed-place-ids\>]`,
   
-		"do-refresh":\<true\\false\>
+	\"destination\":\<destination\>,
+  
+	\"re-run-algo\":\<true\\false\>
 
 }`
 

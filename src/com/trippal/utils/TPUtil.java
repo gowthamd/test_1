@@ -97,7 +97,7 @@ public class TPUtil {
 		if(modifyRequest.getAddedPlaces() != null){
 			retainedList.addAll(modifyRequest.getAddedPlaces());
 		}
-		if(!modifyRequest.isRefreshList()){
+		if(!modifyRequest.needRerunAlgo()){
 			return getSuggestedRoute(retainedList, new RatingComparator());
 		}
 		Map<String, Place> idToPlace = new HashMap<String, Place>();
