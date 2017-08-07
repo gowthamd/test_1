@@ -293,16 +293,16 @@
     ]`
   ,
 	
-    "added-places":`[{"googleId":\<google-id\>,"name":\<name\>,"rank":\<rank\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>},
+    "added-places":`[{"googleId":<google-id>,"name":<name>,"rank":<rank>,"rating":<rating>,"location":{"lat":<latitude>,"lng":<longitude>},"time-to-spent":<time-to-spent>},
     {.......},
     {.......}]`,		
 		
   
 	"removed-place-ids":`[<removed-place-ids>]`,
   
-	"destination":`\<destination\>`,
+	"destination":`<destination>`,
   
-	"re-run-algo":`\<true\\false\>`
+	"re-run-algo":`<true\false>`
 
 }`
 
