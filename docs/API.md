@@ -286,7 +286,7 @@
 
 * **Data Params**
 
-  `{
+  {
   "retained-places":[
     {"googleId":\<google-id\>,"name":\<name\>,"rank":\<rank\>,"rating":\<rating\>,"location":{"lat":\<latitude\>,"lng":\<longitude\>},"time-to-spent":\<time-to-spent\>},
     {.......},
@@ -305,7 +305,7 @@
   
 	"re-run-algo":\<true\\false\>
 
-}`
+}
 
 * **Success Response:**
   
