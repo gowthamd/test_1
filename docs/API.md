@@ -364,9 +364,9 @@
 * **Data Params**
 
   `{
-  "selected-place-ids":    `[\<google-id-list\>]`,
-  "destination" : \<destination\>,
-  "all-places"	: `[\<all-places-list\>]`
+  "selected-place-ids":    `[<google-id-list>]`,
+  "destination" : `<destination>`,
+  "all-places"	: `[<all-places-list>]`
 }`
 	
 	**_The all-places param can be used to provide all the places in the destination. This will make server to avoid querying for the places_**
@@ -376,7 +376,7 @@
 
   * **Code:** 200 <br />
     **Content:** `{"result":[
-		{"googleId":\<google-id\>,"name":\<name\>,"rating":\<rating\>,"latitute":\<latitude\>,"longitude":\<longitude\,"TimeTakenToNextPlace":\<time-taken\>,"time-to-spent":{"hours":\<hours\>,"minutes":\<minutes\>}},
+		{"googleId":<google-id>,"name":<name>,"rating":<rating>,"latitute":<latitude>,"longitude":<longitude>,"TimeTakenToNextPlace":<time-taken>,"time-to-spent":{"hours":<hours>,"minutes":<minutes>}},
 		{....},
 		....
 		]}`
