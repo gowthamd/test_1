@@ -324,7 +324,7 @@
 	Method : PUT
 	Content-Type : application/json
 	Request Body:
-`{
+{
   "retained-places":
     `[
     {"googleId":"ChIJN1ZKKUkWrjsRzxIVM363-LE","name":"\"Bengaluru Palace\"","rating":4.1,"location":{"lat":"12.9986964","lng":"77.59202599999999"}},
@@ -335,16 +335,18 @@
   ,
     "removed-place-ids":`["ChIJqZQybIEWrjsRezNLL4Ju2Gk","ChIJVQ947HgWrjsRty7bPqHZG48","ChIJBw42C-09rjsRs7KmQUqyf3o","ChIJRzdYfjQ4rjsRc9kA7UZXzZk","ChIJlTBafjoUrjsRc99a3-6HCY4",
     "ChIJQWihIyoXrjsR-L_b7ztSjpY","ChIJ3RcPFRkUrjsRVJHcR7hCUUM"]`,
-    
-  "destination":"bangalore",
-  
-  "do-refresh":`true`,
-  
-    "added-places":`[
+	
+	"added-places":`[
     {"googleId":"","name":"Bannerghatta Biological Park","rating":4.1,"location":{"lat":12.8003592,"lng":77.57760979999999}}
   ]`
+    
+  `"destination"`:`"bangalore"`,
+  
+  `"do-refresh"`:`true`,
+  
+    
 
-}`
+}
 
 **8. Add another day to the suggested Places API**
 ----
