@@ -170,8 +170,15 @@ public class TPUtil {
 	
 	public static JsonObject getNearbyTouristPlaces(String destination) throws Exception{
 		Map<String, JsonObject> idToJson = new HashMap<String, JsonObject>();
-		List<Place> placeList = getTouristPlacesByName(destination, idToJson);
-		return convertTo(placeList, idToJson);
+		try{
+			List<Place> placeList = getTouristPlacesByName(destination, idToJson);
+			return convertTo(placeList, idToJson);
+		}catch(APIQuotaExceededException ex){
+			JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+			objectBuilder.add("error", "Google API Quota Exceeded");
+			return objectBuilder.build();
+		}
+		
 	}
 	
 	private static List<Place> getTouristPlacesByName(String destination, Map<String, JsonObject> idToJson) throws Exception{
@@ -265,6 +272,9 @@ public class TPUtil {
 		queryParams.put("placeid", place_id);
 		RestClient restClient = new RestClient();
 		JsonObject googleResponse = restClient.get(uri, queryParams);
+		if(googleResponse.getString("status").trim().equals(TPConstants.QUOTA_EXCEEDED)){
+			throw new APIQuotaExceededException("API Quota Exceeded For Project");
+		}
 		return googleResponse.getJsonObject("result");
 	}
 	
