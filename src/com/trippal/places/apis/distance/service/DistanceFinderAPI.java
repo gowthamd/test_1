@@ -17,6 +17,7 @@ import com.trippal.places.apis.distance.service.domain.DistanceMatrix;
 import com.trippal.places.apis.distance.service.domain.DistanceResponse;
 import com.trippal.places.apis.distance.service.domain.Element;
 import com.trippal.places.apis.distance.service.domain.Row;
+import com.trippal.places.apis.distance.service.domain.exceptions.APIQuotaExceededException;
 import com.trippal.utils.RestClient;
 import com.trippal.utils.TPUtil;
 
@@ -60,7 +61,8 @@ public class DistanceFinderAPI {
 
 	
 	public DistanceResponse calculateDistanceMatrix(@QueryParam(value = "origin") String origin,
-			@QueryParam(value = "destination") String destination, @QueryParam(value = "unit") String unit) {
+			@QueryParam(value = "destination") String destination, @QueryParam(value = "unit") String unit) 
+	throws APIQuotaExceededException{
 
 		RestClient client = new RestClient();
 		Map<String, Object> queryParams = buildRequestData(origin, destination, unit);
@@ -70,6 +72,9 @@ public class DistanceFinderAPI {
 			String googleResponse = client.getAsString(TPConstants.GOOGLE_MAPS_DISANCE_CALC_API, queryParams);
 			Gson gson = new GsonBuilder().create();
 			DistanceMatrix distanceMatrix = gson.fromJson(googleResponse, DistanceMatrix.class);
+			if(distanceMatrix.getStatus().trim().equals(TPConstants.QUOTA_EXCEEDED)){
+				throw new APIQuotaExceededException("Google API Quota Exceeded!!!");
+			}
 
 			if (distanceMatrix != null && distanceMatrix.getRows() != null && !distanceMatrix.getRows().isEmpty()) {
 				int size = distanceMatrix.getRows().size();

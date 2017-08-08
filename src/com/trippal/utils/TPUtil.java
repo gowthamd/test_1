@@ -19,6 +19,7 @@ import javax.json.JsonObjectBuilder;
 
 import com.trippal.constants.PlaceConstants;
 import com.trippal.constants.TPConstants;
+import com.trippal.places.apis.distance.service.domain.exceptions.APIQuotaExceededException;
 import com.trippal.places.apis.planner.comparators.RatingComparator;
 import com.trippal.places.apis.planner.modifyroute.AddDayToRouteRequest;
 import com.trippal.places.apis.planner.modifyroute.ModifyRouteRequest;
@@ -70,8 +71,14 @@ public class TPUtil {
 
 	public static JsonObject getSuggestedTouristPlaces(String destination, Comparator<Place> comparator) throws Exception {
 		Map<String, JsonObject> idToJson = new HashMap<String, JsonObject>();
-		List<Place> placeList = getTouristPlacesByName(destination, idToJson);
-		return getSuggestedRoute(placeList, comparator);
+		try{
+			List<Place> placeList = getTouristPlacesByName(destination, idToJson);
+			return getSuggestedRoute(placeList, comparator);
+		}catch(APIQuotaExceededException ex){
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add("error", "Google API Quota for this Project Exceeded!!!");
+			return responseBuilder.build();
+		}
 		
 	}
 	
@@ -131,7 +138,13 @@ public class TPUtil {
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 		DayPlanner planner = new DayPlanner();
-		Route route = planner.planItenary(new Place(),placeList, comparator);
+		Route route = null;
+		try{
+			route = planner.planItenary(new Place(),placeList, comparator);
+		}catch(APIQuotaExceededException ex){
+			objectBuilder.add("error", "Google API Quota Exceeded");
+			return objectBuilder.build();
+		}
 
 		JsonObjectBuilder inputObjectBuilder = Json.createObjectBuilder();
 		int i=0;
@@ -168,6 +181,9 @@ public class TPUtil {
 		queryParams.put("query", "tourist+places+in+"+destination);
 		RestClient restClient = new RestClient();
 		JsonObject googleResponse = restClient.get(uri, queryParams);
+		if(googleResponse.getString("status").trim().equals(TPConstants.QUOTA_EXCEEDED)){
+			throw new APIQuotaExceededException("API Quota Exceeded For Project");
+		}
 		List<TPPlaceObj> placeList = convertToPlacesArray(googleResponse,idToJson,false,"touristplaces");
 		List<Place> newList = new ArrayList<Place>();
 		for(TPPlaceObj input : placeList){

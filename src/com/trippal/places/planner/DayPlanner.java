@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.trippal.places.apis.distance.service.domain.exceptions.APIQuotaExceededException;
+
 public class DayPlanner {
 	public Route planItenary(Place startPlace, List<Place> places, Comparator<Place> comparator) throws Exception {
 
@@ -14,13 +16,16 @@ public class DayPlanner {
 		// taking top 10 rating places from the places list and using for
 		// calculating ideal route
 		List<Place> placesForAlgo = getPlacesForRouteAlgo(places);
-
-		DayPlannerIter1 iter1 = new DayPlannerIter1(startPlace, placesForAlgo);
-		List<Route> validRoutes = iter1.getValidRoutes();
-
-		DayPlannerIter2 iter2 = new DayPlannerIter2();
-		List<Route> maxWeightRoutes = iter2.identifySuitablePathBasedOnWeightage(validRoutes);
-		return maxWeightRoutes.get(0);
+		try{
+			DayPlannerIter1 iter1 = new DayPlannerIter1(startPlace, placesForAlgo);
+			List<Route> validRoutes = iter1.getValidRoutes();
+	
+			DayPlannerIter2 iter2 = new DayPlannerIter2();
+			List<Route> maxWeightRoutes = iter2.identifySuitablePathBasedOnWeightage(validRoutes);
+			return maxWeightRoutes.get(0);
+		}catch(APIQuotaExceededException ex){
+			throw ex;
+		}
 
 	}
 

@@ -9,6 +9,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import com.trippal.places.apis.distance.service.DistanceFinderAPI;
 import com.trippal.places.apis.distance.service.domain.DistanceResponse;
+import com.trippal.places.apis.distance.service.domain.exceptions.APIQuotaExceededException;
 
 public class DayPlannerIter1 {
 
@@ -36,7 +37,11 @@ public class DayPlannerIter1 {
 		this.startPlace = startPlace;
 		this.places = places;
 		timeMatrix = new LocalTime[places.size()][places.size()];
-		populateDistanceMatrix(places);
+		try{
+			populateDistanceMatrix(places);
+		}catch(APIQuotaExceededException ex){
+			throw ex;
+		}
 		generateValidRoutes(places, new ArrayList<Integer>(), new Route(startPlace), routes, true);
 	}
 
@@ -46,7 +51,11 @@ public class DayPlannerIter1 {
 			placesUri += place.getLocation().getLatitude()+","+place.getLocation().getLongtitude()+"%7C";
 		}
 		DistanceFinderAPI finderAPI = new DistanceFinderAPI();
-		distanceMatrix = finderAPI.calculateDistanceMatrix(placesUri, placesUri, "kms");
+		try{
+			distanceMatrix = finderAPI.calculateDistanceMatrix(placesUri, placesUri, "kms");
+		}catch(APIQuotaExceededException ex){
+			throw ex;
+		}
 		timeMatrix = distanceMatrix.getDurationMatrix();
 	}
 
