@@ -248,7 +248,9 @@ public class TPUtil {
 		timeToSpentJson.add("hours", timeToSpent[0]);
 		timeToSpentJson.add("minutes", timeToSpent[1]);
 		placesObjectBuilder.add("time-to-spent", timeToSpentJson);
-		placesObjectBuilder.add("photo_reference", place.getPhotoRef());
+		if(null != place.getPhotoRef()){
+			placesObjectBuilder.add("photo_reference", place.getPhotoRef());
+		}
 		return placesObjectBuilder.build();
 	}
 
@@ -353,7 +355,9 @@ public class TPUtil {
 		tpPlaceObj.setOpeningHours(place.getJsonObject("opening_hours"));
 		tpPlaceObj.setName(place.get("name"));
 		tpPlaceObj.setGoogleId(place.getString("place_id"));
-		tpPlaceObj.setPhotoRef(place.getJsonArray("photos").getJsonObject(0).getString("photo_reference"));
+		if(place.getJsonArray("photos") != null){
+			tpPlaceObj.setPhotoRef(place.getJsonArray("photos").getJsonObject(0).getString("photo_reference"));
+		}
 		Double rating = 0.0;
 		if(place.get("rating") != null){
 			rating = Double.parseDouble(place.get("rating").toString());
