@@ -3,6 +3,7 @@ package com.trippal.utils;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 
 public class TPPlaceObj implements Comparable<TPPlaceObj>{
@@ -14,6 +15,7 @@ public class TPPlaceObj implements Comparable<TPPlaceObj>{
 	private JsonObject openingHours;
 	private Double rating;
 	private JsonValue types;
+	private String photoRef;
 	public JsonObject getGeometry() {
 		return geometry;
 	}
@@ -69,6 +71,13 @@ public class TPPlaceObj implements Comparable<TPPlaceObj>{
 	@Override
 	public int compareTo(TPPlaceObj tpPlaceObj) {		
 		return tpPlaceObj.getRating().compareTo(this.getRating());
+	}
+	public void setPhotoRef(String string) {
+		this.photoRef = string;		
+	}
+	
+	public String getPhotoRef() {
+		return this.photoRef;	
 	}
 	
 }

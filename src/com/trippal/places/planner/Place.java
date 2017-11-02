@@ -23,6 +23,7 @@ public class Place {
 	private String timeToSpent;
 	private LocalTime[][] timeSlots = new LocalTime[7][2];
 	private boolean isAlwaysOpen = false;
+	private String photoRef;
 
 	public Double getRating() {
 		return rating;
@@ -100,6 +101,13 @@ public class Place {
 	}
 	public void setTimeToSpent(String timeToSpent) {
 		this.timeToSpent = timeToSpent;
+	}
+	public void setPhotoRef(String photoRef) {
+		this.photoRef = photoRef;
+	}
+	
+	public String getPhotoRef(){
+		return this.photoRef;
 	}
 	
 	
