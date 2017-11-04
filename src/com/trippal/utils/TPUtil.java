@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,6 +17,7 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 import com.trippal.constants.PlaceConstants;
 import com.trippal.constants.TPConstants;
@@ -235,7 +237,9 @@ public class TPUtil {
 		JsonObject placeJsonObj = idToJson.get(place.getGoogleId());
 		placesObjectBuilder.add("geometry", placeJsonObj.get("geometry"));
 		placesObjectBuilder.add("name", placeJsonObj.get("name"));
-		placesObjectBuilder.add("rating", placeJsonObj.get("rating"));
+		if(placeJsonObj.get("rating") != null){
+			placesObjectBuilder.add("rating", placeJsonObj.get("rating"));
+		}
 		placesObjectBuilder.add("googleId", place.getGoogleId());
 		JsonObjectBuilder openingHours = Json.createObjectBuilder();
 		if(null != place.getOpeningHour(6)){
