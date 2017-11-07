@@ -10,6 +10,11 @@ import org.joda.time.LocalTime;
  *
  */
 public class Place {
+	@Override
+	public String toString() {
+		return "Place [rank=" + rank + ", rating=" + rating + ", name=" + name + "]";
+	}
+
 	@XmlElement(name="rank")
 	Integer rank;
 	@XmlElement(name="rating")

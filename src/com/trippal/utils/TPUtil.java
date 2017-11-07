@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -142,7 +143,9 @@ public class TPUtil {
 			inputObjectBuilder.add("rating", place.getRating());
 			inputObjectBuilder.add("latitute", place.getLocation().getLatitude());
 			inputObjectBuilder.add("longitude", place.getLocation().getLongtitude());
-			inputObjectBuilder.add("TimeTakenToNextPlace", route.getTimeTaken(i++));
+			if(++i < route.getRoute().size()){
+				inputObjectBuilder.add("TimeTakenToNextPlace", route.getTimeTaken(i));
+			}
 			inputObjectBuilder.add("rank", i);
 			JsonObjectBuilder timeToSpentJson = Json.createObjectBuilder();
 			String[] timeToSpent = place.getTimeToSpent().split(":");
@@ -311,7 +314,7 @@ public class TPUtil {
 			placeList.add(convertGooglePlaceToPlace(place));
 		}
 		System.out.println("convert to google place : "+(System.currentTimeMillis()-startTime));
-		//destinationResBuilder.add(searchTitle, destinationArrayBuilder.build());
+		placeList = placeList.parallelStream().filter(place -> !place.getTypes().toString().contains("travel_agency")).collect(Collectors.toList());
 		Collections.sort(placeList);
 		return placeList;
 	}

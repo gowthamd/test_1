@@ -3,6 +3,7 @@ package com.trippal.places.planner;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -96,10 +97,10 @@ public class DayPlannerIter1 {
 		// startTIme 9.00 am and endTime is 6.00pm
 		LocalTime startTime = formatter.parseLocalTime("9:00");
 		// for all route from position will be from startPosition
-		int fromPosition = 0;
+		int fromPosition = route.getRoute().get(0).getRank();
 		for (Place place : route.getRoute()) {
 			int toPosition = place.getRank();
-			LocalTime travelTime = timeMatrix[fromPosition][toPosition-1];
+			LocalTime travelTime = timeMatrix[fromPosition-1][toPosition-1];
 			//if timeMatrix doesn't have travel time then setting travel time to one hour
 			if(travelTime == null ){
 				travelTime = formatter.parseLocalTime("1:00");
@@ -107,14 +108,24 @@ public class DayPlannerIter1 {
 			route.updateTimeTaken(travelTime);
 			startTime = startTime.plusHours(travelTime.getHourOfDay());
 			startTime = startTime.plusMinutes(travelTime.getMinuteOfHour());
-
-			// adding 90mins or 1 hour and 30 minutes as time to spend at this
-			// place.
-			startTime = startTime.plusMinutes(60);
+			
 			// if this route goes beyond 6.00 pm then not a valid route
 			if (startTime.getHourOfDay() > 18) {
 				return false;
 			}
+
+			// adding 90mins or 1 hour and 30 minutes as time to spend at this
+			// place.
+			
+			LocalTime timeToSpent = LocalTime.parse(place.getTimeToSpent());
+			startTime = startTime.plusHours(timeToSpent.getHourOfDay()).plusMinutes(timeToSpent.getMinuteOfHour());
+			
+			// if this route goes beyond 6.00 pm then not a valid route
+			if (startTime.getHourOfDay() > 18) {
+				return false;
+			}
+			
+			fromPosition = toPosition;
 		}
 		return true;
 	}

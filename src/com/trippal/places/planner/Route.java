@@ -7,6 +7,11 @@ import org.joda.time.LocalTime;
 
 public class Route {
 	
+	@Override
+	public String toString() {
+		return "Route [route=" + route + ", timeTakenToReachNextPlace=" + timeTakenToReachNextPlace + "]";
+	}
+
 	Place startPlace;
 
 	/**
@@ -15,7 +20,7 @@ public class Route {
 	 */
 	private List<Place> route;
 	
-	private List<LocalTime> timeTakenToReachNextPlace = new ArrayList<LocalTime>();;
+	private List<LocalTime> timeTakenToReachNextPlace = new ArrayList<LocalTime>();
 	
 	public Route(Place startPlace) {
 		this.startPlace = startPlace;
