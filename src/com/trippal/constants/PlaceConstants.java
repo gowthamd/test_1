@@ -11,8 +11,8 @@ public enum PlaceConstants {
 	HERITAGE("art_gallery", "museum", "premise"),
 	THEME_PARKS("amusement_park"),
 	WELLNESS("hair_care", "health", "spa"),
-	OTHERS("bowling_alley", "casino", "night_club", "cafe","church", "hindu_temple", "mosque", "synagogue",
-			"aquarium", "park", "natural_feature");
+	WORSHIP("church", "hindu_temple", "mosque", "synagogue"),
+	OTHERS("bowling_alley", "casino", "night_club", "cafe", "aquarium", "park", "natural_feature");
 	
 	private final List<String> values;
 	
@@ -39,6 +39,8 @@ public enum PlaceConstants {
 			case WILD_LIFE : timeToSpent = new LocalTime(3,0);
 			break;
 			case HERITAGE : timeToSpent = new LocalTime(1,0);
+			break;
+			case WORSHIP : timeToSpent = new LocalTime(1,0);
 			break;
 			case THEME_PARKS : timeToSpent = new LocalTime(6,0);
 			break;

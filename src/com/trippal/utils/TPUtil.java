@@ -146,12 +146,10 @@ public class TPUtil {
 			if(++i < route.getRoute().size()){
 				inputObjectBuilder.add("TimeTakenToNextPlace", route.getTimeTaken(i));
 			}
-			inputObjectBuilder.add("rank", i);
-			JsonObjectBuilder timeToSpentJson = Json.createObjectBuilder();
+			//inputObjectBuilder.add("rank", i);
 			String[] timeToSpent = place.getTimeToSpent().split(":");
-			timeToSpentJson.add("hours", timeToSpent[0]);
-			timeToSpentJson.add("minutes", timeToSpent[1]);
-			inputObjectBuilder.add("time-to-spent", timeToSpentJson);
+			String timeToSpentString = timeToSpent[0]+":"+timeToSpent[1];
+			inputObjectBuilder.add("timeToSpent", timeToSpentString);
 			arrayBuilder.add(inputObjectBuilder);
 		}
 		objectBuilder.add("result", arrayBuilder.build());
@@ -326,7 +324,7 @@ public class TPUtil {
 		tpPlaceObj.setGeometry(geometry.getJsonObject("location"));
 		tpPlaceObj.setViewport(geometry.getJsonObject("viewport"));
 		tpPlaceObj.setOpeningHours(place.getJsonObject("opening_hours"));
-		tpPlaceObj.setName(place.get("name"));
+		tpPlaceObj.setName(place.getString("name"));
 		tpPlaceObj.setGoogleId(place.getString("place_id"));
 		Double rating = 0.0;
 		if(place.get("rating") != null){
@@ -343,7 +341,7 @@ public class TPUtil {
 		JsonObject location = place.getJsonObject("geometry").getJsonObject("location");
 		tpPlaceObj.setGeometry(location);
 		//tpPlaceObj.setViewport(place.getJsonObject("viewport"));
-		tpPlaceObj.setName(place.get("name"));
+		tpPlaceObj.setName(place.getString("name"));
 		//tpPlaceObj.setOpeningHours(place.getJsonObject("opening_hours"));
 		tpPlaceObj.setTypes(place.get("types"));
 		Double rating = 0.0;
