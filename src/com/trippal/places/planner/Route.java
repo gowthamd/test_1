@@ -13,6 +13,7 @@ public class Route {
 	}
 
 	Place startPlace;
+	private LocalTime totalTravelTime = new LocalTime(0, 0);
 
 	/**
 	 *  list of place to covered by this route
@@ -41,10 +42,17 @@ public class Route {
 	
 	public void updateTimeTaken(LocalTime timeTaken) {
 		timeTakenToReachNextPlace.add(timeTaken);
+		totalTravelTime = totalTravelTime.plusHours(timeTaken.getHourOfDay()).plusMinutes(timeTaken.getMinuteOfHour());;
 	}
 	
 	public String getTimeTaken(int position) {
 		return timeTakenToReachNextPlace.get(position).toString();
 	}
+	
+	public LocalTime getTotalTime(){
+		return totalTravelTime;
+	}
+	
+	
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class DayPlanner {
 	public Route planItenary(Place startPlace, List<Place> places, Comparator<Place> comparator) throws Exception {
@@ -20,7 +21,8 @@ public class DayPlanner {
 
 		DayPlannerIter2 iter2 = new DayPlannerIter2();
 		List<Route> maxWeightRoutes = iter2.identifySuitablePathBasedOnWeightage(validRoutes);
-		return maxWeightRoutes.get(0);
+		Optional<Route> selected = maxWeightRoutes.parallelStream().min(Comparator.comparing(Route::getTotalTime));
+		return selected.orElse(maxWeightRoutes.get(0));
 
 	}
 
