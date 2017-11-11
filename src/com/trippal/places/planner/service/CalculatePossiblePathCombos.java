@@ -1,7 +1,9 @@
-package com.trippal.places.planner;
+package com.trippal.places.planner.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.trippal.places.planner.domain.Input;
 
 public class CalculatePossiblePathCombos {
 	

@@ -1,4 +1,4 @@
-package com.trippal.places.planner;
+package com.trippal.places.planner.domain;
 
 import java.util.HashMap;
 import java.util.Map;

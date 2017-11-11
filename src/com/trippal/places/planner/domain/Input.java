@@ -1,6 +1,4 @@
-package com.trippal.places.planner;
-
-
+package com.trippal.places.planner.domain;
 
 public class Input {
 	int time;//in minutes fromPlace to toPlace

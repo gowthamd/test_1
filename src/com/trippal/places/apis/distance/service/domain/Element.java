@@ -5,7 +5,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Element {
 
-    @SerializedName("distance")
+    @Override
+	public String toString() {
+		return "[" + distance + ", " + duration + "]";
+	}
+
+	@SerializedName("distance")
     @Expose
     private Distance distance;
     @SerializedName("duration")

@@ -1,4 +1,4 @@
-package com.trippal.places.planner;
+package com.trippal.places.planner.domain;
 
 import javax.xml.bind.annotation.XmlElement;
 
@@ -10,17 +10,23 @@ import org.joda.time.LocalTime;
  *
  */
 public class Place {
+	@Override
+	public String toString() {
+		return "Place [rank=" + rank + ", rating=" + rating + ", name=" + name + "]";
+	}
+
 	@XmlElement(name="rank")
 	Integer rank;
 	@XmlElement(name="rating")
 	Double rating;
 	@XmlElement(name="location")
 	Location location;
+	@XmlElement(name="name")
 	private String name;
 	@XmlElement(name="googleId")
 	private String googlePlaceId;
 	@XmlElement(name="time-to-spent")
-	private String timeToSpent;
+	private LocalTime timeToSpent;
 	private LocalTime[][] timeSlots = new LocalTime[7][2];
 	private boolean isAlwaysOpen = false;
 	private String photoRef;
@@ -96,10 +102,10 @@ public class Place {
 		}
 		
 	}
-	public String getTimeToSpent() {
+	public LocalTime getTimeToSpent() {
 		return timeToSpent;
 	}
-	public void setTimeToSpent(String timeToSpent) {
+	public void setTimeToSpent(LocalTime timeToSpent) {
 		this.timeToSpent = timeToSpent;
 	}
 	public void setPhotoRef(String photoRef) {

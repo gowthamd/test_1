@@ -1,17 +1,16 @@
-package com.trippal.utils;
+package com.trippal.externalapi.domain;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonString;
 import javax.json.JsonValue;
 
-public class TPPlaceObj implements Comparable<TPPlaceObj>{
+public class ExternalPlaceObj implements Comparable<ExternalPlaceObj>{
 	
 	private JsonObject geometry;
 	private JsonObject viewport;
 	private String googleId;
-	private JsonValue name;
+	private String name;
 	private JsonObject openingHours;
 	private Double rating;
 	private JsonValue types;
@@ -34,11 +33,11 @@ public class TPPlaceObj implements Comparable<TPPlaceObj>{
 	public void setGoogleId(String googleId) {
 		this.googleId = googleId;
 	}
-	public JsonValue getName() {
+	public String getName() {
 		return name;
 	}
-	public void setName(JsonValue jsonValue) {
-		this.name = jsonValue;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public JsonObject getOpeningHours() {
 		return openingHours;
@@ -69,7 +68,7 @@ public class TPPlaceObj implements Comparable<TPPlaceObj>{
 		return jsonBuilder.build();
 	}
 	@Override
-	public int compareTo(TPPlaceObj tpPlaceObj) {		
+	public int compareTo(ExternalPlaceObj tpPlaceObj) {		
 		return tpPlaceObj.getRating().compareTo(this.getRating());
 	}
 	public void setPhotoRef(String string) {

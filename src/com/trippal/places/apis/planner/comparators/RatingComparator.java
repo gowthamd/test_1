@@ -2,7 +2,7 @@ package com.trippal.places.apis.planner.comparators;
 
 import java.util.Comparator;
 
-import com.trippal.places.planner.Place;
+import com.trippal.places.planner.domain.Place;
 
 public class RatingComparator implements Comparator<Place> {
 
