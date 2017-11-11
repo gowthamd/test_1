@@ -1,4 +1,4 @@
-package com.trippal.places.planner;
+package com.trippal.places.planner.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,8 @@ import org.joda.time.format.DateTimeFormatter;
 import com.trippal.places.apis.distance.service.DistanceFinderAPI;
 import com.trippal.places.apis.distance.service.domain.DistanceResponse;
 import com.trippal.places.apis.distance.service.domain.exceptions.APIQuotaExceededException;
+import com.trippal.places.planner.domain.Place;
+import com.trippal.places.planner.domain.Route;
 
 public class DayPlannerIter1 {
 
@@ -20,6 +22,7 @@ public class DayPlannerIter1 {
 	 */
 	LocalTime[][] timeMatrix;
 	Place startPlace;
+	Place endPlace;
 	List<Place> places;
 	// have all possible combination routes made from places list
 	List<Route> routes = new ArrayList<Route>();
@@ -31,29 +34,32 @@ public class DayPlannerIter1 {
 	 * @param startPlace
 	 * @param places
 	 *            {p1,p2,p3,p4,p5,p6,p7}
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public DayPlannerIter1(Place startPlace, List<Place> places) throws Exception {
+	public DayPlannerIter1(Place startPlace, Place endPlace, List<Place> places) throws Exception {
 		this.startPlace = startPlace;
+		this.endPlace = endPlace;
 		this.places = places;
 		timeMatrix = new LocalTime[places.size()][places.size()];
-		try{
+		try {
 			populateDistanceMatrix(places);
-		}catch(APIQuotaExceededException ex){
+		} catch (APIQuotaExceededException ex) {
 			throw ex;
 		}
-		generateValidRoutes(places, new ArrayList<Integer>(), new Route(startPlace), routes, true);
+		generateValidRoutes(places, new ArrayList<Integer>(), new Route(startPlace, endPlace), routes, true);
 	}
 
 	private void populateDistanceMatrix(List<Place> places) throws Exception {
-		String placesUri = "";
-		for(Place place: places){
-			placesUri += place.getLocation().getLatitude()+","+place.getLocation().getLongtitude()+"%7C";
+		String placesUri = startPlace.getLocation().getLatitude() + "," + startPlace.getLocation().getLongtitude()
+				+ "%7C";
+		for (Place place : places) {
+			placesUri += place.getLocation().getLatitude() + "," + place.getLocation().getLongtitude() + "%7C";
 		}
+		placesUri += endPlace.getLocation().getLatitude()+","+endPlace.getLocation().getLongtitude()+"%7C";
 		DistanceFinderAPI finderAPI = new DistanceFinderAPI();
-		try{
+		try {
 			distanceMatrix = finderAPI.calculateDistanceMatrix(placesUri, placesUri, "kms");
-		}catch(APIQuotaExceededException ex){
+		} catch (APIQuotaExceededException ex) {
 			throw ex;
 		}
 		timeMatrix = distanceMatrix.getDurationMatrix();
@@ -84,7 +90,7 @@ public class DayPlannerIter1 {
 				}
 			}
 			if (!visitedPositions.contains(i)) {
-				route = new Route(startPlace);
+				route = new Route(startPlace, endPlace);
 				route.setRoute(prevPlace);
 				route.addPlace(places.get(i));
 				if (isValidRoute(route)) {
@@ -108,22 +114,34 @@ public class DayPlannerIter1 {
 		int fromPosition = 0;
 		for (Place place : route.getRoute()) {
 			int toPosition = place.getRank();
-			LocalTime travelTime = timeMatrix[fromPosition][toPosition-1];
-			//if timeMatrix doesn't have travel time then setting travel time to one hour
-			if(travelTime == null ){
+			LocalTime travelTime = timeMatrix[fromPosition][toPosition];
+			fromPosition = toPosition;
+			// if timeMatrix doesn't have travel time then setting travel time
+			// to one hour
+			if (travelTime == null) {
 				travelTime = formatter.parseLocalTime("1:00");
 			}
 			route.updateTimeTaken(travelTime);
-			startTime = startTime.plusHours(travelTime.getHourOfDay());
-			startTime = startTime.plusMinutes(travelTime.getMinuteOfHour());
 
-			// adding 90mins or 1 hour and 30 minutes as time to spend at this
-			// place.
-			startTime = startTime.plusMinutes(60);
+			startTime = startTime.plusHours(travelTime.getHourOfDay()).plusMinutes(travelTime.getMinuteOfHour());
 			// if this route goes beyond 6.00 pm then not a valid route
 			if (startTime.getHourOfDay() > 18) {
 				return false;
 			}
+			startTime = startTime.plusHours(place.getTimeToSpent().getHourOfDay())
+					.plusMinutes(place.getTimeToSpent().getMinuteOfHour());
+
+			// if this route goes beyond 6.00 pm then not a valid route
+			if (startTime.getHourOfDay() > 18) {
+				return false;
+			}
+		}
+		LocalTime travelTime = timeMatrix[fromPosition][places.size()+1];
+		route.updateTimeTaken(travelTime);
+		startTime = startTime.plusHours(travelTime.getHourOfDay()).plusMinutes(travelTime.getMinuteOfHour());
+		// if this route goes beyond 6.00 pm then not a valid route
+		if (startTime.getHourOfDay() > 18) {
+			return false;
 		}
 		return true;
 	}

@@ -24,6 +24,7 @@ import com.trippal.utils.TPUtil;
 @Path("/distance")
 public class DistanceFinderAPI {
 
+
 	@GET
 	@Path("/find")
 	public String calculateDistance(@QueryParam(value = "origin") String origin,
@@ -70,6 +71,7 @@ public class DistanceFinderAPI {
 
 		try {
 			String googleResponse = client.getAsString(TPConstants.GOOGLE_MAPS_DISANCE_CALC_API, queryParams);
+			System.out.println("respone \n :\n"+googleResponse);
 			Gson gson = new GsonBuilder().create();
 			DistanceMatrix distanceMatrix = gson.fromJson(googleResponse, DistanceMatrix.class);
 			if(distanceMatrix.getStatus().trim().equals(TPConstants.QUOTA_EXCEEDED)){

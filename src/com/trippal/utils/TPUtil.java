@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,20 +16,20 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 
 import com.trippal.constants.PlaceConstants;
 import com.trippal.constants.TPConstants;
+import com.trippal.externalapi.domain.ExternalPlaceObj;
 import com.trippal.places.apis.distance.service.domain.exceptions.APIQuotaExceededException;
 import com.trippal.places.apis.planner.comparators.RatingComparator;
 import com.trippal.places.apis.planner.modifyroute.AddDayToRouteRequest;
 import com.trippal.places.apis.planner.modifyroute.ModifyRouteRequest;
-import com.trippal.places.planner.DayPlanner;
-import com.trippal.places.planner.Location;
-import com.trippal.places.planner.Place;
-import com.trippal.places.planner.Route;
-import com.trippaldal.dal.places.GooglePlacesDao;
-import com.trippaldal.dal.places.GooglePlacesDaoImpl;
+import com.trippal.places.planner.domain.Location;
+import com.trippal.places.planner.domain.Place;
+import com.trippal.places.planner.domain.Route;
+import com.trippal.places.planner.service.DayPlanner;
+import com.trippaldal.dal.config.places.GooglePlacesDao;
+import com.trippaldal.dal.config.places.GooglePlacesDaoImpl;
 
 public class TPUtil {
 	
@@ -69,21 +68,7 @@ public class TPUtil {
 		RestClient restClient = new RestClient();
 		JsonObject googleResponse = restClient.get(uri, queryParams);		
 		return convertToPlacesJsonArray(googleResponse,false,"nearbyplaces");
-	}
-
-	public static JsonObject getSuggestedTouristPlaces(String destination, Comparator<Place> comparator) throws Exception {
-		Map<String, JsonObject> idToJson = new HashMap<String, JsonObject>();
-		try{
-			List<Place> placeList = getTouristPlacesByName(destination, idToJson);
-			return getSuggestedRoute(placeList, comparator);
-		}catch(APIQuotaExceededException ex){
-			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
-			responseBuilder.add("error", "Google API Quota for this Project Exceeded!!!");
-			return responseBuilder.build();
-		}
-		
-	}
-	
+	}	
 
 
 	public static JsonObject getNextdayRoute(AddDayToRouteRequest addDayToRouteRequest) throws Exception {
@@ -136,13 +121,20 @@ public class TPUtil {
 	}
 	
 	
-	private static JsonObject getSuggestedRoute(List<Place> placeList, Comparator<Place> comparator) throws Exception{
+	public static JsonObject getSuggestedRoute(List<Place> placeList, Comparator<Place> comparator) throws Exception{
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 		DayPlanner planner = new DayPlanner();
 		Route route = null;
 		try{
-			route = planner.planItenary(new Place(),placeList, comparator);
+			Place place = new Place();
+			place.setName("bangalore");
+			Location location = new Location();
+			location.setLatitude("12.9716");
+			location.setLongtitude("77.5946");
+			place.setLocation(location);
+			
+			route = planner.planItenary(place,placeList,place, comparator);
 		}catch(APIQuotaExceededException ex){
 			objectBuilder.add("error", "Google API Quota Exceeded");
 			return objectBuilder.build();
@@ -159,11 +151,6 @@ public class TPUtil {
 			inputObjectBuilder.add("longitude", place.getLocation().getLongtitude());
 			inputObjectBuilder.add("TimeTakenToNextPlace", route.getTimeTaken(i++));
 			inputObjectBuilder.add("rank", i);
-			JsonObjectBuilder timeToSpentJson = Json.createObjectBuilder();
-			String[] timeToSpent = place.getTimeToSpent().split(":");
-			timeToSpentJson.add("hours", timeToSpent[0]);
-			timeToSpentJson.add("minutes", timeToSpent[1]);
-			inputObjectBuilder.add("time-to-spent", timeToSpentJson);
 			arrayBuilder.add(inputObjectBuilder);
 		}
 		objectBuilder.add("result", arrayBuilder.build());
@@ -183,7 +170,7 @@ public class TPUtil {
 		
 	}
 	
-	private static List<Place> getTouristPlacesByName(String destination, Map<String, JsonObject> idToJson) throws Exception{
+	public static List<Place> getTouristPlacesByName(String destination, Map<String, JsonObject> idToJson) throws Exception{
 		String uri = TPConstants.GOOGLE_TEXT_SEARCH_API;
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("key", getGoogleAPIKey());
@@ -193,9 +180,9 @@ public class TPUtil {
 		if(googleResponse.getString("status").trim().equals(TPConstants.QUOTA_EXCEEDED)){
 			throw new APIQuotaExceededException("API Quota Exceeded For Project");
 		}
-		List<TPPlaceObj> placeList = convertToPlacesArray(googleResponse,idToJson,false,"touristplaces");
+		List<ExternalPlaceObj> placeList = convertToPlacesArray(googleResponse,idToJson,false,"touristplaces");
 		List<Place> newList = new ArrayList<Place>();
-		for(TPPlaceObj input : placeList){
+		for(ExternalPlaceObj input : placeList){
 			Place place = convertTo(input);
 			newList.add(place);
 		}
@@ -247,11 +234,6 @@ public class TPUtil {
 			openingHours.add("close", place.getClosingHour(6).toString());
 			placesObjectBuilder.add("opening_hours", openingHours);
 		}
-		String[] timeToSpent = place.getTimeToSpent().split(":");
-		JsonObjectBuilder timeToSpentJson = Json.createObjectBuilder();
-		timeToSpentJson.add("hours", timeToSpent[0]);
-		timeToSpentJson.add("minutes", timeToSpent[1]);
-		placesObjectBuilder.add("time-to-spent", timeToSpentJson);
 		if(null != place.getPhotoRef()){
 			placesObjectBuilder.add("photo_reference", place.getPhotoRef());
 		}
@@ -291,7 +273,7 @@ public class TPUtil {
 		return location;
 	}
 	
-	private static Place convertTo(TPPlaceObj input) {
+	private static Place convertTo(ExternalPlaceObj input) {
 		Place place = new Place();
 		Location location = new Location();
 		location.setLatitude(input.getGeometry().get("lat").toString());
@@ -307,7 +289,7 @@ public class TPUtil {
 				continue;
 			}
 			place.setTimeToSpent(PlaceConstants.getTimeToSpent(PlaceConstants.find(typeArray.getString(i).trim())));
-			break;
+			break;    
 		}
 		return place;
 	}
@@ -331,9 +313,9 @@ public class TPUtil {
 		return destinationResBuilder.build();
 	}
 	
-	private static List<TPPlaceObj> convertToPlacesArray(JsonObject nearByJson, Map<String, JsonObject> idToJson, boolean sortByRating, String searchTitle) throws Exception{
+	private static List<ExternalPlaceObj> convertToPlacesArray(JsonObject nearByJson, Map<String, JsonObject> idToJson, boolean sortByRating, String searchTitle) throws Exception{
 		JsonArray placesArray = (JsonArray)nearByJson.get("results");
-		List<TPPlaceObj> placeList = new ArrayList<TPPlaceObj>();
+		List<ExternalPlaceObj> placeList = new ArrayList<ExternalPlaceObj>();
 		
 		long startTime = System.currentTimeMillis();
 		//placesArray = sortByRating(placesArray);
@@ -350,9 +332,9 @@ public class TPUtil {
 		return placeList;
 	}
 	
-	private static TPPlaceObj convertGooglePlaceToPlace(JsonObject place) throws Exception {
+	private static ExternalPlaceObj convertGooglePlaceToPlace(JsonObject place) throws Exception {
 		//JsonObject details = getPlaceDetailsById(place.getString("place_id"));
-		TPPlaceObj tpPlaceObj = new TPPlaceObj();
+		ExternalPlaceObj tpPlaceObj = new ExternalPlaceObj();
 		JsonObject geometry = place.getJsonObject("geometry");
 		tpPlaceObj.setGeometry(geometry.getJsonObject("location"));
 		tpPlaceObj.setViewport(geometry.getJsonObject("viewport"));
@@ -373,7 +355,7 @@ public class TPUtil {
 	}
 
 	private static JsonObject convertGooglePlaceToTPPlace(JsonObject place){
-		TPPlaceObj tpPlaceObj = new TPPlaceObj();
+		ExternalPlaceObj tpPlaceObj = new ExternalPlaceObj();
 		JsonObject location = place.getJsonObject("geometry").getJsonObject("location");
 		tpPlaceObj.setGeometry(location);
 		//tpPlaceObj.setViewport(place.getJsonObject("viewport"));

@@ -1,12 +1,11 @@
-package com.trippal.utils;
+package com.trippal.externalapi.domain;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonString;
 import javax.json.JsonValue;
 
-public class TPPlaceObj implements Comparable<TPPlaceObj>{
+public class ExternalPlaceObj implements Comparable<ExternalPlaceObj>{
 	
 	private JsonObject geometry;
 	private JsonObject viewport;
@@ -69,7 +68,7 @@ public class TPPlaceObj implements Comparable<TPPlaceObj>{
 		return jsonBuilder.build();
 	}
 	@Override
-	public int compareTo(TPPlaceObj tpPlaceObj) {		
+	public int compareTo(ExternalPlaceObj tpPlaceObj) {		
 		return tpPlaceObj.getRating().compareTo(this.getRating());
 	}
 	public void setPhotoRef(String string) {

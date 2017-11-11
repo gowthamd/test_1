@@ -11,7 +11,8 @@ public enum PlaceConstants {
 	HERITAGE("art_gallery", "museum", "premise"),
 	THEME_PARKS("amusement_park"),
 	WELLNESS("hair_care", "health", "spa"),
-	OTHERS("bowling_alley", "casino", "night_club", "cafe","church", "hindu_temple", "mosque", "synagogue",
+	TEMPLE("church", "hindu_temple", "mosque"),
+	OTHERS("bowling_alley", "casino", "night_club", "cafe", "synagogue",
 			"aquarium", "park", "natural_feature");
 	
 	private final List<String> values;
@@ -33,7 +34,7 @@ public enum PlaceConstants {
 	    return OTHERS;
 	}
 	
-	public static String getTimeToSpent(PlaceConstants placeType){
+	public static LocalTime getTimeToSpent(PlaceConstants placeType){
 		LocalTime timeToSpent;
 		switch(placeType){
 			case WILD_LIFE : timeToSpent = new LocalTime(3,0);
@@ -44,10 +45,12 @@ public enum PlaceConstants {
 			break;
 			case WELLNESS : timeToSpent = new LocalTime(1,0);
 			break;
+			case TEMPLE : timeToSpent = new LocalTime(1,0);
+			break;
 			default: timeToSpent = new LocalTime(2,0);
 			break;
 		}
-		return timeToSpent.toString();
+		return timeToSpent;
 	}
 	
 }

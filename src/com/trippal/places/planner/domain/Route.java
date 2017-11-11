@@ -1,4 +1,4 @@
-package com.trippal.places.planner;
+package com.trippal.places.planner.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,10 @@ import org.joda.time.LocalTime;
 public class Route {
 	
 	Place startPlace;
+	
+	Place endPlace;
+	
+	private LocalTime totalTravelTime = new LocalTime(0, 0);
 
 	/**
 	 *  list of place to covered by this route
@@ -17,8 +21,9 @@ public class Route {
 	
 	private List<LocalTime> timeTakenToReachNextPlace = new ArrayList<LocalTime>();;
 	
-	public Route(Place startPlace) {
+	public Route(Place startPlace, Place endPlace) {
 		this.startPlace = startPlace;
+		this.endPlace = endPlace;
 		route = new ArrayList<Place>();
 	}
 	
@@ -36,10 +41,15 @@ public class Route {
 	
 	public void updateTimeTaken(LocalTime timeTaken) {
 		timeTakenToReachNextPlace.add(timeTaken);
+		totalTravelTime = totalTravelTime.plusHours(timeTaken.getHourOfDay()).plusMinutes(timeTaken.getMinuteOfHour());;
 	}
 	
 	public String getTimeTaken(int position) {
 		return timeTakenToReachNextPlace.get(position).toString();
+	}
+
+	public LocalTime getTotalTime(){
+		return totalTravelTime;
 	}
 
 }

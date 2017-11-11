@@ -5,7 +5,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.trippal.places.planner.Place;
+import com.trippal.places.planner.domain.Place;
 
 @XmlRootElement
 public class AddDayToRouteRequest {

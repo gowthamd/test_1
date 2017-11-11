@@ -1,7 +1,10 @@
-package com.trippal.places.planner;
+package com.trippal.places.planner.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.trippal.places.planner.domain.Place;
+import com.trippal.places.planner.domain.Route;
 
 public class DayPlannerIter2 {
 
@@ -32,6 +35,7 @@ public class DayPlannerIter2 {
 				curWeight += weightageMatrix[position-1];
 			}
 			if (curWeight > maxWeight) {
+				maxWeight = curWeight;
 				maxWeightRoutes.clear();
 				maxWeightRoutes.add(route);
 			} else if (curWeight == maxWeight) {
