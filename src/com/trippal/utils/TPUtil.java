@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -149,8 +150,11 @@ public class TPUtil {
 			inputObjectBuilder.add("rating", place.getRating());
 			inputObjectBuilder.add("latitute", place.getLocation().getLatitude());
 			inputObjectBuilder.add("longitude", place.getLocation().getLongtitude());
-			inputObjectBuilder.add("TimeTakenToNextPlace", route.getTimeTaken(i++));
-			inputObjectBuilder.add("rank", i);
+			if(++i < route.getRoute().size()){
+				inputObjectBuilder.add("TimeTakenToNextPlace", route.getTimeTaken(i));
+			}
+			//inputObjectBuilder.add("rank", i);
+			inputObjectBuilder.add("timeToSpent", place.getTimeToSpent().toString());
 			arrayBuilder.add(inputObjectBuilder);
 		}
 		objectBuilder.add("result", arrayBuilder.build());
@@ -327,7 +331,7 @@ public class TPUtil {
 			placeList.add(convertGooglePlaceToPlace(place));
 		}
 		System.out.println("convert to google place : "+(System.currentTimeMillis()-startTime));
-		//destinationResBuilder.add(searchTitle, destinationArrayBuilder.build());
+		placeList = placeList.parallelStream().filter(place -> !place.getTypes().toString().contains("travel_agency")).collect(Collectors.toList());
 		Collections.sort(placeList);
 		return placeList;
 	}
@@ -339,7 +343,7 @@ public class TPUtil {
 		tpPlaceObj.setGeometry(geometry.getJsonObject("location"));
 		tpPlaceObj.setViewport(geometry.getJsonObject("viewport"));
 		tpPlaceObj.setOpeningHours(place.getJsonObject("opening_hours"));
-		tpPlaceObj.setName(place.get("name"));
+		tpPlaceObj.setName(place.getString("name"));
 		tpPlaceObj.setGoogleId(place.getString("place_id"));
 		if(place.getJsonArray("photos") != null){
 			tpPlaceObj.setPhotoRef(place.getJsonArray("photos").getJsonObject(0).getString("photo_reference"));
@@ -359,7 +363,7 @@ public class TPUtil {
 		JsonObject location = place.getJsonObject("geometry").getJsonObject("location");
 		tpPlaceObj.setGeometry(location);
 		//tpPlaceObj.setViewport(place.getJsonObject("viewport"));
-		tpPlaceObj.setName(place.get("name"));
+		tpPlaceObj.setName(place.getString("name"));
 		//tpPlaceObj.setOpeningHours(place.getJsonObject("opening_hours"));
 		tpPlaceObj.setTypes(place.get("types"));
 		Double rating = 0.0;

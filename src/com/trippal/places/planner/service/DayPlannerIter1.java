@@ -3,6 +3,7 @@ package com.trippal.places.planner.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -111,7 +112,7 @@ public class DayPlannerIter1 {
 		// startTIme 9.00 am and endTime is 6.00pm
 		LocalTime startTime = formatter.parseLocalTime("9:00");
 		// for all route from position will be from startPosition
-		int fromPosition = 0;
+		int fromPosition = route.getRoute().get(0).getRank();
 		for (Place place : route.getRoute()) {
 			int toPosition = place.getRank();
 			LocalTime travelTime = timeMatrix[fromPosition][toPosition];
@@ -130,17 +131,18 @@ public class DayPlannerIter1 {
 			}
 			startTime = startTime.plusHours(place.getTimeToSpent().getHourOfDay())
 					.plusMinutes(place.getTimeToSpent().getMinuteOfHour());
-
 			// if this route goes beyond 6.00 pm then not a valid route
 			if (startTime.getHourOfDay() > 18) {
 				return false;
 			}
+			
+			fromPosition = toPosition;
 		}
 		LocalTime travelTime = timeMatrix[fromPosition][places.size()+1];
 		route.updateTimeTaken(travelTime);
 		startTime = startTime.plusHours(travelTime.getHourOfDay()).plusMinutes(travelTime.getMinuteOfHour());
-		// if this route goes beyond 6.00 pm then not a valid route
-		if (startTime.getHourOfDay() > 18) {
+		// if this route goes beyond 8.00 pm then not a valid route
+		if (startTime.getHourOfDay() > 20) {
 			return false;
 		}
 		return true;

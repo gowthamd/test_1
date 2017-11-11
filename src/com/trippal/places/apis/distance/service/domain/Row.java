@@ -6,7 +6,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Row {
 
-    @SerializedName("elements")
+    @Override
+	public String toString() {
+		return "[" + elements + "]";
+	}
+
+	@SerializedName("elements")
     @Expose
     private List<Element> elements = null;
 

@@ -10,7 +10,7 @@ public class ExternalPlaceObj implements Comparable<ExternalPlaceObj>{
 	private JsonObject geometry;
 	private JsonObject viewport;
 	private String googleId;
-	private JsonValue name;
+	private String name;
 	private JsonObject openingHours;
 	private Double rating;
 	private JsonValue types;
@@ -33,11 +33,11 @@ public class ExternalPlaceObj implements Comparable<ExternalPlaceObj>{
 	public void setGoogleId(String googleId) {
 		this.googleId = googleId;
 	}
-	public JsonValue getName() {
+	public String getName() {
 		return name;
 	}
-	public void setName(JsonValue jsonValue) {
-		this.name = jsonValue;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public JsonObject getOpeningHours() {
 		return openingHours;

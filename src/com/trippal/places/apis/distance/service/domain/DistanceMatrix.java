@@ -6,7 +6,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class DistanceMatrix {
 
-    @SerializedName("destination_addresses")
+    @Override
+	public String toString() {
+		return "[destAddr=" + destinationAddresses + ", origAddr=" + originAddresses
+				+ ", rows=" + rows + ", status=" + status + "]";
+	}
+
+	@SerializedName("destination_addresses")
     @Expose
     private List<String> destinationAddresses = null;
     @SerializedName("origin_addresses")

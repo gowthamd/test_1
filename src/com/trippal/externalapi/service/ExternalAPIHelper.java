@@ -52,7 +52,7 @@ public class ExternalAPIHelper {
 		tpPlaceObj.setGeometry(geometry.getJsonObject("location"));
 		tpPlaceObj.setViewport(geometry.getJsonObject("viewport"));
 		tpPlaceObj.setOpeningHours(place.getJsonObject("opening_hours"));
-		tpPlaceObj.setName(place.get("name"));
+		tpPlaceObj.setName(place.get("name").toString());
 		tpPlaceObj.setGoogleId(place.getString("place_id"));
 		if (place.getJsonArray("photos") != null) {
 			tpPlaceObj.setPhotoRef(place.getJsonArray("photos").getJsonObject(0).getString("photo_reference"));
