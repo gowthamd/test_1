@@ -112,7 +112,7 @@ public class DayPlannerIter1 {
 		// startTIme 9.00 am and endTime is 6.00pm
 		LocalTime startTime = formatter.parseLocalTime("9:00");
 		// for all route from position will be from startPosition
-		int fromPosition = route.getRoute().get(0).getRank();
+		int fromPosition = 0;
 		for (Place place : route.getRoute()) {
 			int toPosition = place.getRank();
 			LocalTime travelTime = timeMatrix[fromPosition][toPosition];
@@ -135,8 +135,6 @@ public class DayPlannerIter1 {
 			if (startTime.getHourOfDay() > 18) {
 				return false;
 			}
-			
-			fromPosition = toPosition;
 		}
 		LocalTime travelTime = timeMatrix[fromPosition][places.size()+1];
 		route.updateTimeTaken(travelTime);
